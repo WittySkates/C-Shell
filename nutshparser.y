@@ -17,6 +17,7 @@ int getlogin_r(char *buf, size_t bufsize);
 int runCD(char* arg);
 int homeCD();
 int runSetAlias(char *name, char *word);
+int listAlias();
 int printWorkingDir();
 int printForeignDir(char *path);
 %}
@@ -32,6 +33,7 @@ cmd_line    :
 	| CD STRING END        			{runCD($2); return 1;}
 	| CD END						{homeCD(); return 1;}
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
+	| ALIAS END						{listAlias(); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
 	| WC STRING END					{runWordCount($2); return 1;}
@@ -103,6 +105,15 @@ int runSetAlias(char *name, char *word) {
 	aliasIndex++;
 
 	return 1;
+}
+
+int listAlias(){
+	for (int i = 0; i < aliasIndex; i++) {
+		printf(aliasTable.name[i]);
+		printf(": ");
+		printf(aliasTable.word[i]);
+		printf("\n");
+	}
 }
 
 int printWorkingDir(){
