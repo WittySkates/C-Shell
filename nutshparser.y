@@ -18,14 +18,16 @@ int runCD(char* arg);
 int homeCD();
 int runSetAlias(char *name, char *word);
 int listAlias();
+int removeAlias(char *name);
 int printWorkingDir();
 int printForeignDir(char *path);
+int runWordCount(char *path);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END LS WC
+%token <string> BYE CD STRING ALIAS UNALIAS END LS WC
 
 %%
 cmd_line    :
@@ -34,9 +36,10 @@ cmd_line    :
 	| CD END						{homeCD(); return 1;}
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
 	| ALIAS END						{listAlias(); return 1;}
+	| UNALIAS STRING END			{removeAlias($2); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
-	| WC STRING END					{runWordCount($2); return 1;}
+	| WC STRING END					{runWordCount($2); return 1;}			
 
 %%
 
@@ -105,6 +108,28 @@ int runSetAlias(char *name, char *word) {
 	aliasIndex++;
 
 	return 1;
+}
+
+int removeAlias(char *name){
+	int isFound = 0;
+	for (int i = 0; i < aliasIndex; i++) {
+		if(strcmp(aliasTable.name[i], name) == 0){
+			isFound = 1;
+			for(int j = i; j < aliasIndex-1; j++){
+				strcpy(aliasTable.name[j], aliasTable.name[j+1]);
+				strcpy(aliasTable.word[j], aliasTable.word[j+1]);
+			}
+			break;
+		}
+	}
+	if(isFound == 1){
+		aliasIndex--;
+		return 1;
+	}
+	else{
+		printf("There is no alias with the name: %s\n", name);
+		return 1;
+	}
 }
 
 int listAlias(){
