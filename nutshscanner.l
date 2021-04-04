@@ -40,6 +40,7 @@ bye                 { return BYE;   }
 cd		            { return CD;    }
 ls                  { return LS;    }
 alias		        { return ALIAS; }
+wc                  { return WC;    }
 "\n"		        { return END;   }
 [\"]                 { BEGIN(string_condition); }
 {CHAR}+              {if(ifAlias(yytext)) {
