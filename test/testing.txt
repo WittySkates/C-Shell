@@ -1,0 +1,4 @@
+testing this
+word here
+to count the lines
+and characters

@@ -24,7 +24,7 @@ int printForeignDir(char *path);
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END LS
+%token <string> BYE CD STRING ALIAS END LS WC
 
 %%
 cmd_line    :
@@ -34,6 +34,7 @@ cmd_line    :
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
+	| WC STRING END					{runWordCount($2); return 1;}
 
 %%
 
@@ -143,4 +144,41 @@ int printForeignDir(char *path){
     }
     closedir(d); 																					// finally close the directory
 	temp[0] = 0;
+}
+
+int runWordCount(char *path){
+	char ch;
+    int characters, words, lines;
+
+	FILE *file = fopen(path, "r");
+
+	if(file == NULL){
+		printf("\nUnable to open file.\n");
+	}
+
+	characters = words = lines = 0;
+    while ((ch = fgetc(file)) != EOF)
+    {
+        characters++;
+        /* Check new line */
+        if (ch == '\n' || ch == '\0')
+            lines++;
+        /* Check words */
+        if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\0')
+            words++;
+    }
+
+    /* Increment words and lines for last word */
+    if (characters > 0) {
+        words++;
+        lines++;
+    }
+
+    /* Print file statistics */
+    printf("\n");
+    printf("Total characters = %d\n", characters);
+    printf("Total words      = %d\n", words);
+    printf("Total lines      = %d\n", lines);
+
+    fclose(file);
 }
