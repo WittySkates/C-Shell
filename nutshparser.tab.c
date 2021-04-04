@@ -82,11 +82,14 @@
 
 int yylex(void);
 int yyerror(char *s);
+int getlogin_r(char *buf, size_t bufsize);
 int runCD(char* arg);
+int homeCD();
 int runSetAlias(char *name, char *word);
 int printWorkingDir();
+int printForeignDir(char *path);
 
-#line 90 "nutshparser.tab.c"
+#line 93 "nutshparser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -147,10 +150,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 21 "nutshparser.y"
+#line 24 "nutshparser.y"
 char *string;
 
-#line 154 "nutshparser.tab.c"
+#line 157 "nutshparser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -467,18 +470,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  10
+#define YYFINAL  12
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   11
+#define YYLAST   15
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  9
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  5
+#define YYNRULES  7
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  14
+#define YYNSTATES  17
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   263
@@ -526,7 +529,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    28,    28,    29,    30,    31
+       0,    31,    31,    32,    33,    34,    35,    36
 };
 #endif
 
@@ -563,8 +566,8 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,    -5,    -1,     1,     0,     8,    -6,     2,     5,    -6,
-      -6,    -6,     4,    -6
+      -3,    -5,    -1,     3,     2,    10,    -6,     4,    -6,     7,
+       6,    -6,    -6,    -6,     8,    -6,    -6
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -572,8 +575,8 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     2,     0,     0,     5,
-       1,     3,     0,     4
+       0,     0,     0,     0,     0,     0,     2,     0,     4,     0,
+       0,     6,     1,     3,     0,     7,     5
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -593,34 +596,34 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,     6,     3,     7,     4,     8,     9,    10,    11,
-      12,    13
+       1,     2,     6,     3,     7,     4,     8,    10,     9,    11,
+      12,    13,    14,    15,     0,    16
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     7,     6,     5,     8,     5,     7,     0,     7,
-       5,     7
+       3,     4,     7,     6,     5,     8,     7,     5,     5,     7,
+       0,     7,     5,     7,    -1,     7
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     6,     8,    10,     7,     5,     5,     7,
-       0,     7,     5,     7
+       0,     3,     4,     6,     8,    10,     7,     5,     7,     5,
+       5,     7,     0,     7,     5,     7,     7
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     9,    10,    10,    10,    10
+       0,     9,    10,    10,    10,    10,    10,    10
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     3,     4,     2
+       0,     2,     2,     3,     2,     4,     2,     3
 };
 
 
@@ -1316,31 +1319,43 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 28 "nutshparser.y"
+#line 31 "nutshparser.y"
                                                 {exit(1); return 1; }
-#line 1322 "nutshparser.tab.c"
+#line 1325 "nutshparser.tab.c"
     break;
 
   case 3:
-#line 29 "nutshparser.y"
+#line 32 "nutshparser.y"
                                                 {runCD((yyvsp[-1].string)); return 1;}
-#line 1328 "nutshparser.tab.c"
+#line 1331 "nutshparser.tab.c"
     break;
 
   case 4:
-#line 30 "nutshparser.y"
-                                                {runSetAlias((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1334 "nutshparser.tab.c"
+#line 33 "nutshparser.y"
+                                                                {homeCD(); return 1;}
+#line 1337 "nutshparser.tab.c"
     break;
 
   case 5:
-#line 31 "nutshparser.y"
+#line 34 "nutshparser.y"
+                                                {runSetAlias((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
+#line 1343 "nutshparser.tab.c"
+    break;
+
+  case 6:
+#line 35 "nutshparser.y"
                                                                 {printWorkingDir(); return 1;}
-#line 1340 "nutshparser.tab.c"
+#line 1349 "nutshparser.tab.c"
+    break;
+
+  case 7:
+#line 36 "nutshparser.y"
+                                                        {printForeignDir((yyvsp[-1].string)); return 1;}
+#line 1355 "nutshparser.tab.c"
     break;
 
 
-#line 1344 "nutshparser.tab.c"
+#line 1359 "nutshparser.tab.c"
 
       default: break;
     }
@@ -1572,7 +1587,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 33 "nutshparser.y"
+#line 38 "nutshparser.y"
 
 
 int yyerror(char *s) {
@@ -1589,7 +1604,6 @@ int runCD(char* arg) {
 			return 1;
 		}
 		else {
-			getcwd(cwd, sizeof(cwd));
 			strcpy(varTable.word[0], cwd);
 			printf("Directory not found\n");
 			return 1;
@@ -1605,6 +1619,24 @@ int runCD(char* arg) {
                        	return 1;
 		}
 	}
+	getcwd(cwd, sizeof(cwd));
+}
+
+int homeCD() {
+	char user[PATH_MAX];
+	char path[PATH_MAX];
+	getlogin_r(user, PATH_MAX);
+	strcat(path, "/home/");
+	strcat(path, user);
+	if(chdir(path) == 0) {
+			strcpy(varTable.word[0], path);
+			return 1;
+		}
+		else {
+			strcpy(varTable.word[0], cwd);
+			printf("Directory not found\n");
+			return 1;
+		}
 }
 
 int runSetAlias(char *name, char *word) {
@@ -1645,4 +1677,28 @@ int printWorkingDir(){
       }
     }
     closedir(d); // finally close the directory
+}
+
+int printForeignDir(char *path){
+	char temp[PATH_MAX];
+	strcat(temp, cwd);
+	strcat(temp, "/");
+	strcat(temp, path);
+	printf("%s\n", temp);
+	DIR * d = opendir(temp); // open the path
+  	if(d==NULL) return 1; // if was not able return
+  	struct dirent * dir; // for the directory entries
+  	while ((dir = readdir(d)) != NULL) // if we were able to read somehting from the directory
+    {
+      if(dir-> d_type != DT_DIR) // if the type is not directory just print it with blue
+        printf("%s%s\n",BLUE, dir->d_name);
+      else if(dir -> d_type == DT_DIR && strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0 ) // if it is a directory
+      {
+        printf("%s%s\n",GREEN, dir->d_name); // print its name in green
+        char d_path[255]; // here I am using sprintf which is safer than strcat
+        sprintf(d_path, "%s/%s", temp, dir->d_name);
+      }
+    }
+    closedir(d); // finally close the directory
+	temp[0] = 0;
 }
