@@ -150,10 +150,18 @@ int runWordCount(char *path){
 	char ch;
     int characters, words, lines;
 
+	int len = strlen(path);
+	const char *last_four = &path[len-4];
+
+	if(strcmp(last_four, ".txt") != 0){
+		strcat(path, ".txt");
+	}
+
 	FILE *file = fopen(path, "r");
 
 	if(file == NULL){
-		printf("\nUnable to open file.\n");
+		printf("Unable to open file.\n");
+		return 1;
 	}
 
 	characters = words = lines = 0;

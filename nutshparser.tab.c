@@ -1709,21 +1709,27 @@ int runWordCount(char *path){
 	char ch;
     int characters, words, lines;
 
+	int len = strlen(path);
+	const char *last_four = &path[len-4];
+
+	if(strcmp(last_four, ".txt") != 0){
+		strcat(path, ".txt");
+	}
+
 	FILE *file = fopen(path, "r");
 
 	if(file == NULL){
-		printf("\nUnable to open file.\n");
+		printf("Unable to open file.\n");
+		return 1;
 	}
 
 	characters = words = lines = 0;
     while ((ch = fgetc(file)) != EOF)
     {
         characters++;
-
         /* Check new line */
         if (ch == '\n' || ch == '\0')
             lines++;
-
         /* Check words */
         if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\0')
             words++;
@@ -1741,7 +1747,5 @@ int runWordCount(char *path){
     printf("Total words      = %d\n", words);
     printf("Total lines      = %d\n", lines);
 
-
-    /* Close files to release resources */
     fclose(file);
 }
