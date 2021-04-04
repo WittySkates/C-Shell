@@ -51,6 +51,7 @@ int runCD(char* arg) {
 			return 1;
 		}
 		else {
+			getcwd(cwd, sizeof(cwd));
 			strcpy(varTable.word[0], cwd);
 			printf("Directory not found\n");
 			return 1;
@@ -66,24 +67,19 @@ int runCD(char* arg) {
                        	return 1;
 		}
 	}
-	getcwd(cwd, sizeof(cwd));
 }
 
-int homeCD() {
-	char user[PATH_MAX];
-	char path[PATH_MAX];
-	getlogin_r(user, PATH_MAX);
-	strcat(path, "/home/");
-	strcat(path, user);
-	if(chdir(path) == 0) {
-			strcpy(varTable.word[0], path);
-			return 1;
-		}
-		else {
-			strcpy(varTable.word[0], cwd);
-			printf("Directory not found\n");
-			return 1;
-		}
+int homeCD() {											// function to change directory to /home/user
+	if(chdir(varTable.word[1]) == 0) {					// check if you can change directory to user
+		strcpy(varTable.word[0], varTable.word[1]);		// if so, update present working directory
+		return 1;
+	}
+	else {
+		getcwd(cwd, sizeof(cwd));						// if not, update cwd
+		strcpy(varTable.word[0], cwd);					// set pwd to be cwd
+		printf("Directory not found\n");
+		return 1;
+	}
 }
 
 int runSetAlias(char *name, char *word) {
@@ -109,43 +105,42 @@ int runSetAlias(char *name, char *word) {
 }
 
 int printWorkingDir(){
-	DIR * d = opendir(*varTable.word); // open the path
-  	if(d==NULL) return 1; // if was not able return
-  	struct dirent * dir; // for the directory entries
-  	while ((dir = readdir(d)) != NULL) // if we were able to read somehting from the directory
+	DIR * d = opendir(varTable.word[0]); 															// open the path
+  	if(d==NULL) return 1; 																			// if was not able return
+  	struct dirent * dir; 																			// for the directory entries
+  	while ((dir = readdir(d)) != NULL) 																// if we were able to read somehting from the directory
     {
-      if(dir-> d_type != DT_DIR) // if the type is not directory just print it with blue
+      if(dir-> d_type != DT_DIR) 																	// if the type is not directory just print it with blue
         printf("%s%s\n",BLUE, dir->d_name);
       else if(dir -> d_type == DT_DIR && strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0 ) // if it is a directory
       {
-        printf("%s%s\n",GREEN, dir->d_name); // print its name in green
-        char d_path[255]; // here I am using sprintf which is safer than strcat
-        sprintf(d_path, "%s/%s", *varTable.word, dir->d_name);
+        printf("%s%s\n",GREEN, dir->d_name); 														// print its name in green
+        char d_path[255]; 																			// here I am using sprintf which is safer than strcat
+        sprintf(d_path, "%s/%s", varTable.word[0], dir->d_name);
       }
     }
-    closedir(d); // finally close the directory
+    closedir(d); 																					// finally close the directory
 }
 
 int printForeignDir(char *path){
 	char temp[PATH_MAX];
-	strcat(temp, cwd);
+	strcat(temp, varTable.word[0]);																	// create a string of the pwd/path
 	strcat(temp, "/");
 	strcat(temp, path);
-	printf("%s\n", temp);
-	DIR * d = opendir(temp); // open the path
-  	if(d==NULL) return 1; // if was not able return
-  	struct dirent * dir; // for the directory entries
-  	while ((dir = readdir(d)) != NULL) // if we were able to read somehting from the directory
+	DIR * d = opendir(temp); 																		// open the path
+  	if(d==NULL) return 1; 																			// if was not able return
+  	struct dirent * dir; 																			// for the directory entries
+  	while ((dir = readdir(d)) != NULL) 																// if we were able to read somehting from the directory
     {
-      if(dir-> d_type != DT_DIR) // if the type is not directory just print it with blue
+      if(dir-> d_type != DT_DIR) 																	// if the type is not directory just print it with blue
         printf("%s%s\n",BLUE, dir->d_name);
       else if(dir -> d_type == DT_DIR && strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0 ) // if it is a directory
       {
-        printf("%s%s\n",GREEN, dir->d_name); // print its name in green
-        char d_path[255]; // here I am using sprintf which is safer than strcat
+        printf("%s%s\n",GREEN, dir->d_name); 														// print its name in green
+        char d_path[255]; 																			// here I am using sprintf which is safer than strcat
         sprintf(d_path, "%s/%s", temp, dir->d_name);
       }
     }
-    closedir(d); // finally close the directory
+    closedir(d); 																					// finally close the directory
 	temp[0] = 0;
 }

@@ -17,15 +17,21 @@ int main()
 
     getcwd(cwd, sizeof(cwd));
 
-    strcpy(varTable.var[varIndex], "PWD");
-    strcpy(varTable.word[varIndex], cwd);
+    strcpy(varTable.var[varIndex], "PWD");          // holds the Current working directory.
+    strcpy(varTable.word[varIndex], cwd);           // UPDATE THIS WHENEVER YOU CHANGE DIRECTORIES
     varIndex++;
-    strcpy(varTable.var[varIndex], "HOME");
-    strcpy(varTable.word[varIndex], cwd);
+
+    strcpy(varTable.var[varIndex], "HOME");         // sets word in HOME to /home/*username*
+    char user[PATH_MAX];
+    getlogin_r(user, PATH_MAX);
+    strcpy(varTable.word[varIndex], "/home/");
+    strcat(varTable.word[varIndex], user);
     varIndex++;
+
     strcpy(varTable.var[varIndex], "PROMPT");
     strcpy(varTable.word[varIndex], "nutshell");
     varIndex++;
+
     strcpy(varTable.var[varIndex], "PATH");
     strcpy(varTable.word[varIndex], ".:/bin");
     varIndex++;
