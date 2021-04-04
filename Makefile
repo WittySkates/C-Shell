@@ -1,7 +1,15 @@
-all:
-	flex json.l
-	bison -d json.y
-	# Since we have noyywrap enabled, we don't need to compile with -lfl
-	g++ -o json main.cpp lex.yy.c json.tab.c
-	# By the way, this will throw some warnings. They're harmless, and you can
-	# suppress them if you want.
+CC=/usr/bin/cc
+
+all:  bison-config flex-config nutshell
+
+bison-config:
+	bison -d nutshparser.y
+
+flex-config:
+	flex nutshscanner.l
+
+nutshell: 
+	$(CC) nutshell.c nutshparser.tab.c lex.yy.c -o nutshell
+
+clean:
+	rm nutshparser.tab.c nutshparser.tab.h lex.yy.c nutshell
