@@ -28,19 +28,20 @@ bool ifAlias(char* name){
 %x string_condition
 
 CHAR            [.A-Za-z0-9!\/_-][.A-Za-z0-9!\/_-]*
-ANYCHAR            [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -]*
-
+ANYCHAR         [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -]*
+WCMATCH         [wc][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~-]+
 %%
 
-<string_condition>{ANYCHAR}+     { yylval.string = strdup(yytext); return STRING;}
+<string_condition>{ANYCHAR}+    { yylval.string = strdup(yytext); printf("yytext: %s\n", yytext); return STRING;}
 <string_condition>[\"]          {BEGIN(INITIAL);}
+
 
 [ ]		            { }
 bye                 { return BYE;   }
 cd		            { return CD;    }
 ls                  { return LS;    }
 alias		        { return ALIAS; }
-wc                  { return WC;    }
+wc                  { return WC;    }   
 "\n"		        { return END;   }
 [\"]                 { BEGIN(string_condition); }
 {CHAR}+              {if(ifAlias(yytext)) {

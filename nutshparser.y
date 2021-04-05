@@ -19,12 +19,15 @@ int homeCD();
 int runSetAlias(char *name, char *word);
 int printWorkingDir();
 int printForeignDir(char *path);
+int runWordCount(char *files);
+char* concat(const char *s1, const char *s2);
 %}
 
 %union {char *string;}
 
 %start cmd_line
 %token <string> BYE CD STRING ALIAS END LS WC
+%type <string> ARGS ARGS1
 
 %%
 cmd_line    :
@@ -34,14 +37,31 @@ cmd_line    :
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
-	| WC STRING END					{runWordCount($2); return 1;}
-
+	| WC ARGS						
+	;
+	
+ARGS		:
+	STRING END						{runWordCount($1); return 1;}
+	| STRING 						{runWordCount($1);}
+	| ARGS STRING					{runWordCount($2); $$ = $2;}
+	| ARGS END						{return 1;}
+	;
+	
 %%
 
 int yyerror(char *s) {
   printf("%s\n",s);
   return 0;
   }
+
+char* concat(const char *s1, const char *s2)
+{
+    char *result = malloc(strlen(s1) + strlen(s2) + 1);
+    strcpy(result, s1);
+    strcat(result, s2);
+	printf("Result: %s", result);
+    return result;
+}
 
 int runCD(char* arg) {
 	if (arg[0] != '/') { // arg is relative path
@@ -146,47 +166,61 @@ int printForeignDir(char *path){
 	temp[0] = 0;
 }
 
-int runWordCount(char *path){
+int runWordCount(char *files){
+
 	char ch;
     int characters, words, lines;
 
-	int len = strlen(path);
-	const char *last_four = &path[len-4];
+	char *token = strtok(files, " ");
 
-	if(strcmp(last_four, ".txt") != 0){
-		strcat(path, ".txt");
+	//printf("File %s\n", files);
+
+	while(token != NULL){
+		char *token_copy = malloc(sizeof(token));
+		strcpy(token_copy, token);
+
+		int len = strlen(token_copy);
+		const char *last_four = &token_copy[len-4];
+
+		if(strcmp(last_four, ".txt") != 0){
+			strcat(token_copy, ".txt");
+		}
+
+		FILE *file = fopen(token_copy, "r");
+
+		if(file == NULL){
+			printf("Unable to open file: %s\n", token_copy);
+			return 1;
+		}
+
+		characters = 0;
+		words = 0;
+		lines = 0;
+
+		while ((ch = fgetc(file)) != EOF){
+			characters++;
+			// Check new line
+			if (ch == '\n' || ch == '\0')
+				lines++;
+			// Check words
+			if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\0')
+				words++;
+		}
+
+		// Increment words and lines for last word 
+		if (characters > 0){
+			words++;
+			lines++;
+		}
+
+		// Print file statistics
+		printf("File %s\n", token_copy);
+		printf("Total characters = %d\n", characters);
+		printf("Total words      = %d\n", words);
+		printf("Total lines      = %d\n", lines);
+
+		fclose(file);
+		free(token_copy);
+		token = strtok(NULL, " ");
 	}
-
-	FILE *file = fopen(path, "r");
-
-	if(file == NULL){
-		printf("Unable to open file.\n");
-		return 1;
-	}
-
-	characters = words = lines = 0;
-    while ((ch = fgetc(file)) != EOF)
-    {
-        characters++;
-        /* Check new line */
-        if (ch == '\n' || ch == '\0')
-            lines++;
-        /* Check words */
-        if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\0')
-            words++;
-    }
-
-    /* Increment words and lines for last word */
-    if (characters > 0) {
-        words++;
-        lines++;
-    }
-
-    /* Print file statistics */
-    printf("\n");
-    printf("Total characters = %d\n", characters);
-    printf("Total words      = %d\n", words);
-    printf("Total lines      = %d\n", lines);
-
-    fclose(file);
 }
