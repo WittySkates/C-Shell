@@ -707,7 +707,7 @@ YY_DECL
 		}
 
 	{
-#line 33 "nutshscanner.l"
+#line 32 "nutshscanner.l"
 
 
 #line 714 "lex.yy.c"
@@ -769,58 +769,58 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 35 "nutshscanner.l"
+#line 34 "nutshscanner.l"
 { yylval.string = strdup(yytext); printf("yytext: %s\n", yytext); return STRING;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 36 "nutshscanner.l"
+#line 35 "nutshscanner.l"
 {BEGIN(INITIAL);}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 39 "nutshscanner.l"
+#line 38 "nutshscanner.l"
 { }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 40 "nutshscanner.l"
+#line 39 "nutshscanner.l"
 { return BYE;   }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 41 "nutshscanner.l"
+#line 40 "nutshscanner.l"
 { return CD;    }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 42 "nutshscanner.l"
+#line 41 "nutshscanner.l"
 { return LS;    }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 43 "nutshscanner.l"
+#line 42 "nutshscanner.l"
 { return ALIAS; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 44 "nutshscanner.l"
+#line 43 "nutshscanner.l"
 { return WC;    }   
 	YY_BREAK
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 45 "nutshscanner.l"
+#line 44 "nutshscanner.l"
 { return END;   }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 46 "nutshscanner.l"
+#line 45 "nutshscanner.l"
 { BEGIN(string_condition); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 47 "nutshscanner.l"
+#line 46 "nutshscanner.l"
 {if(ifAlias(yytext)) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
@@ -837,7 +837,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 60 "nutshscanner.l"
+#line 59 "nutshscanner.l"
 ECHO;
 	YY_BREAK
 #line 844 "lex.yy.c"
@@ -1846,5 +1846,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 60 "nutshscanner.l"
+#line 59 "nutshscanner.l"
 

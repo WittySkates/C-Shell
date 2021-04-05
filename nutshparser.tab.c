@@ -532,8 +532,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    33,    33,    34,    35,    36,    37,    38,    39,    49,
-      50,    51,    52
+       0,    34,    34,    35,    36,    37,    38,    39,    40,    44,
+      45,    46,    47
 };
 #endif
 
@@ -1330,61 +1330,61 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 33 "nutshparser.y"
+#line 34 "nutshparser.y"
                                                 {exit(1); return 1; }
 #line 1336 "nutshparser.tab.c"
     break;
 
   case 3:
-#line 34 "nutshparser.y"
+#line 35 "nutshparser.y"
                                                 {runCD((yyvsp[-1].string)); return 1;}
 #line 1342 "nutshparser.tab.c"
     break;
 
   case 4:
-#line 35 "nutshparser.y"
+#line 36 "nutshparser.y"
                                                                 {homeCD(); return 1;}
 #line 1348 "nutshparser.tab.c"
     break;
 
   case 5:
-#line 36 "nutshparser.y"
+#line 37 "nutshparser.y"
                                                 {runSetAlias((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
 #line 1354 "nutshparser.tab.c"
     break;
 
   case 6:
-#line 37 "nutshparser.y"
+#line 38 "nutshparser.y"
                                                                 {printWorkingDir(); return 1;}
 #line 1360 "nutshparser.tab.c"
     break;
 
   case 7:
-#line 38 "nutshparser.y"
+#line 39 "nutshparser.y"
                                                         {printForeignDir((yyvsp[-1].string)); return 1;}
 #line 1366 "nutshparser.tab.c"
     break;
 
   case 9:
-#line 49 "nutshparser.y"
+#line 44 "nutshparser.y"
                                                                 {runWordCount((yyvsp[-1].string)); return 1;}
 #line 1372 "nutshparser.tab.c"
     break;
 
   case 10:
-#line 50 "nutshparser.y"
+#line 45 "nutshparser.y"
                                                                 {runWordCount((yyvsp[0].string));}
 #line 1378 "nutshparser.tab.c"
     break;
 
   case 11:
-#line 51 "nutshparser.y"
+#line 46 "nutshparser.y"
                                                         {runWordCount((yyvsp[0].string)); (yyval.string) = (yyvsp[0].string);}
 #line 1384 "nutshparser.tab.c"
     break;
 
   case 12:
-#line 52 "nutshparser.y"
+#line 47 "nutshparser.y"
                                                                 {return 1;}
 #line 1390 "nutshparser.tab.c"
     break;
@@ -1622,7 +1622,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 55 "nutshparser.y"
+#line 50 "nutshparser.y"
 
 
 int yyerror(char *s) {
@@ -1748,8 +1748,6 @@ int runWordCount(char *files){
     int characters, words, lines;
 
 	char *token = strtok(files, " ");
-
-	//printf("File %s\n", files);
 
 	while(token != NULL){
 		char *token_copy = malloc(sizeof(token));
