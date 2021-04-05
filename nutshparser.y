@@ -173,8 +173,6 @@ int runWordCount(char *files){
 
 	char *token = strtok(files, " ");
 
-	//printf("File %s\n", files);
-
 	while(token != NULL){
 		char *token_copy = malloc(sizeof(token));
 		strcpy(token_copy, token);

@@ -29,7 +29,6 @@ bool ifAlias(char* name){
 
 CHAR            [.A-Za-z0-9!\/_-][.A-Za-z0-9!\/_-]*
 ANYCHAR         [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -]*
-WCMATCH         [wc][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~-]+
 %%
 
 <string_condition>{ANYCHAR}+    { yylval.string = strdup(yytext); printf("yytext: %s\n", yytext); return STRING;}
