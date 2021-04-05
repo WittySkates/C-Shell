@@ -543,7 +543,7 @@ static const yytype_int8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "BYE", "CD", "STRING", "ALIAS", "END",
-  "LS", "WC", "$accept", "cmd_line", "ARGS", YY_NULLPTR
+  "LS", "WC", "$accept", "cmd_line", "WCARGS", YY_NULLPTR
 };
 #endif
 
@@ -1331,13 +1331,13 @@ yyreduce:
     {
   case 2:
 #line 34 "nutshparser.y"
-                                                {exit(1); return 1; }
+                                                                {exit(1); return 1; }
 #line 1336 "nutshparser.tab.c"
     break;
 
   case 3:
 #line 35 "nutshparser.y"
-                                                {runCD((yyvsp[-1].string)); return 1;}
+                                                        {runCD((yyvsp[-1].string)); return 1;}
 #line 1342 "nutshparser.tab.c"
     break;
 
@@ -1385,7 +1385,7 @@ yyreduce:
 
   case 12:
 #line 47 "nutshparser.y"
-                                                                {return 1;}
+                                                        {return 1;}
 #line 1390 "nutshparser.tab.c"
     break;
 

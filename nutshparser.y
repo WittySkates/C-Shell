@@ -27,24 +27,24 @@ char* concat(const char *s1, const char *s2);
 
 %start cmd_line
 %token <string> BYE CD STRING ALIAS END LS WC
-%type <string> ARGS
+%type <string> WCARGS
 
 %%
 cmd_line    :
-	BYE END 		                {exit(1); return 1; }
-	| CD STRING END        			{runCD($2); return 1;}
+	BYE END							{exit(1); return 1; }
+	| CD STRING END					{runCD($2); return 1;}
 	| CD END						{homeCD(); return 1;}
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
-	| WC ARGS						
+	| WC WCARGS						
 	;
 	
-ARGS		:
+WCARGS		:
 	STRING END						{runWordCount($1); return 1;}
-	| STRING 						{runWordCount($1);}
-	| ARGS STRING					{runWordCount($2); $$ = $2;}
-	| ARGS END						{return 1;}
+	| STRING						{runWordCount($1);}
+	| WCARGS STRING					{runWordCount($2); $$ = $2;}
+	| WCARGS END					{return 1;}
 	;
 	
 %%
