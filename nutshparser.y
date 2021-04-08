@@ -27,7 +27,7 @@ char* concatArgs(const char *s1, const char *s2);
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END LS PWD
+%token <string> BYE CD STRING ALIAS END PWD
 %type <string> ARGS
 
 %%
