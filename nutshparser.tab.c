@@ -1642,7 +1642,7 @@ char* concat(const char *s1, const char *s2)
 
 char* concatArgs(const char *s1, const char *s2)
 {
-    char *result = malloc(strlen(s1) + strlen(s2) + 1);
+    char *result = malloc(strlen(s1) + strlen(s2) + strlen(" ") + 1);
     strcpy(result, s1);
 	strcat(result, " ");
     strcat(result, s2);
