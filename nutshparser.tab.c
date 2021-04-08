@@ -1695,34 +1695,6 @@ int runPWD() {
     printf("%s\n", cwd);
 }
 
-// Use as example for non built in commands with execv and processess
-/*
-int executePWD(char *cmd) {
-	pid_t pid;
-	char* paramList[] = {"pwd", NULL};
-
-	if ((pid = fork()) == -1)
-		perror("fork error");
-	else if (pid == 0) {
-		execv("/bin/pwd", paramList);
-		printf("Return not expected. Must be an execv error.n");
-		exit(0);
-	}
-	else{
-		wait();
-	}
-}
-
-// Use as example for non built in commands with pipes
-char buffer[500];
-FILE *output;
-output = popen("/bin/pwd", "r");
-char *pwd = fgets(buffer, sizeof(buffer), output);
-pwd = strtok(pwd, "\n");
-printf("%s\n", pwd);
-
-*/
-
 int runCD(char* arg) {
 	if (arg[0] != '/') { // arg is relative path
 		strcat(varTable.word[0], "/");
