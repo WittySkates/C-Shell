@@ -90,8 +90,9 @@ int printWorkingDir();
 int printForeignDir(char *path);
 int runWordCount(char *files);
 char* concat(const char *s1, const char *s2);
+char* concatArgs(const char *s1, const char *s2);
 
-#line 95 "nutshparser.tab.c"
+#line 96 "nutshparser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -145,7 +146,10 @@ extern int yydebug;
     ALIAS = 261,
     END = 262,
     LS = 263,
-    WC = 264
+    WC = 264,
+    PWD = 265,
+    PING = 266,
+    CAT = 267
   };
 #endif
 
@@ -153,10 +157,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 26 "nutshparser.y"
+#line 27 "nutshparser.y"
 char *string;
 
-#line 160 "nutshparser.tab.c"
+#line 164 "nutshparser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -473,21 +477,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  15
+#define YYFINAL  21
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   20
+#define YYLAST   29
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  10
+#define YYNTOKENS  13
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  3
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  12
+#define YYNRULES  13
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  23
+#define YYNSTATES  30
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   264
+#define YYMAXUTOK   267
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -525,15 +529,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9
+       5,     6,     7,     8,     9,    10,    11,    12
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    34,    34,    35,    36,    37,    38,    39,    40,    44,
-      45,    46,    47
+       0,    35,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,    49,    50
 };
 #endif
 
@@ -543,7 +547,7 @@ static const yytype_int8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "BYE", "CD", "STRING", "ALIAS", "END",
-  "LS", "WC", "$accept", "cmd_line", "WCARGS", YY_NULLPTR
+  "LS", "WC", "PWD", "PING", "CAT", "$accept", "cmd_line", "ARGS", YY_NULLPTR
 };
 #endif
 
@@ -552,7 +556,8 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_int16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,   261,   262,   263,   264
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267
 };
 # endif
 
@@ -570,9 +575,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,    -5,     2,    -1,     3,     7,    14,    -6,     8,    -6,
-      11,    10,    -6,    12,     6,    -6,    -6,    13,    -6,    -6,
-      -6,    -6,    -6
+      -3,    -5,     5,    -1,     6,    18,    12,    18,    18,    24,
+      -6,    19,    -6,    20,    21,    -6,    -6,     9,    -6,    10,
+      13,    -6,    -6,    22,    -6,    -6,    -6,    -6,    -6,    -6
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -580,21 +585,21 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     0,     2,     0,     4,
-       0,     0,     6,    10,     8,     1,     3,     0,     7,     9,
-      11,    12,     5
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       2,     0,     4,     0,     0,     6,    12,     0,     9,     0,
+       0,     1,     3,     0,     7,    13,     8,    10,    11,     5
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -6,    -6,    -6
+      -6,    -6,    14
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     6,    14
+      -1,     9,    17
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -602,39 +607,39 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,     7,     3,    10,     4,     5,     8,    11,     9,
-      12,    20,    13,    21,    15,    16,    17,    18,     0,    19,
-      22
+       1,     2,    10,     3,    13,     4,     5,     6,     7,     8,
+      11,    14,    12,    15,    25,    25,    26,    27,    25,    18,
+      28,    19,    20,    16,    21,    23,    22,     0,    24,    29
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     7,     6,     5,     8,     9,     5,     5,     7,
-       7,     5,     5,     7,     0,     7,     5,     7,    -1,     7,
-       7
+       3,     4,     7,     6,     5,     8,     9,    10,    11,    12,
+       5,     5,     7,     7,     5,     5,     7,     7,     5,     7,
+       7,     7,     8,     5,     0,     5,     7,    -1,     7,     7
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     6,     8,     9,    11,     7,     5,     7,
-       5,     5,     7,     5,    12,     0,     7,     5,     7,     7,
-       5,     7,     7
+       0,     3,     4,     6,     8,     9,    10,    11,    12,    14,
+       7,     5,     7,     5,     5,     7,     5,    15,     7,    15,
+      15,     0,     7,     5,     7,     5,     7,     7,     7,     7
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    10,    11,    11,    11,    11,    11,    11,    11,    12,
-      12,    12,    12
+       0,    13,    14,    14,    14,    14,    14,    14,    14,    14,
+      14,    14,    15,    15
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     3,     2,     4,     2,     3,     2,     2,
-       1,     2,     2
+       0,     2,     2,     3,     2,     4,     2,     3,     3,     2,
+       3,     3,     1,     2
 };
 
 
@@ -1330,67 +1335,79 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 34 "nutshparser.y"
+#line 35 "nutshparser.y"
                                                                 {exit(1); return 1; }
-#line 1336 "nutshparser.tab.c"
+#line 1341 "nutshparser.tab.c"
     break;
 
   case 3:
-#line 35 "nutshparser.y"
+#line 36 "nutshparser.y"
                                                         {runCD((yyvsp[-1].string)); return 1;}
-#line 1342 "nutshparser.tab.c"
+#line 1347 "nutshparser.tab.c"
     break;
 
   case 4:
-#line 36 "nutshparser.y"
+#line 37 "nutshparser.y"
                                                                 {homeCD(); return 1;}
-#line 1348 "nutshparser.tab.c"
+#line 1353 "nutshparser.tab.c"
     break;
 
   case 5:
-#line 37 "nutshparser.y"
+#line 38 "nutshparser.y"
                                                 {runSetAlias((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1354 "nutshparser.tab.c"
+#line 1359 "nutshparser.tab.c"
     break;
 
   case 6:
-#line 38 "nutshparser.y"
+#line 39 "nutshparser.y"
                                                                 {printWorkingDir(); return 1;}
-#line 1360 "nutshparser.tab.c"
+#line 1365 "nutshparser.tab.c"
     break;
 
   case 7:
-#line 39 "nutshparser.y"
+#line 40 "nutshparser.y"
                                                         {printForeignDir((yyvsp[-1].string)); return 1;}
-#line 1366 "nutshparser.tab.c"
+#line 1371 "nutshparser.tab.c"
+    break;
+
+  case 8:
+#line 41 "nutshparser.y"
+                                                        {execute("wc", (yyvsp[-1].string)); return 1;}
+#line 1377 "nutshparser.tab.c"
     break;
 
   case 9:
-#line 44 "nutshparser.y"
-                                                                {runWordCount((yyvsp[-1].string)); return 1;}
-#line 1372 "nutshparser.tab.c"
+#line 42 "nutshparser.y"
+                                                                {runPWD(); return 1;}
+#line 1383 "nutshparser.tab.c"
     break;
 
   case 10:
-#line 45 "nutshparser.y"
-                                                                {runWordCount((yyvsp[0].string));}
-#line 1378 "nutshparser.tab.c"
+#line 43 "nutshparser.y"
+                                                        {execute("ping", (yyvsp[-1].string)); return 1;}
+#line 1389 "nutshparser.tab.c"
     break;
 
   case 11:
-#line 46 "nutshparser.y"
-                                                        {runWordCount((yyvsp[0].string)); (yyval.string) = (yyvsp[0].string);}
-#line 1384 "nutshparser.tab.c"
+#line 44 "nutshparser.y"
+                                                        {execute("cat", (yyvsp[-1].string)); return 1;}
+#line 1395 "nutshparser.tab.c"
     break;
 
   case 12:
-#line 47 "nutshparser.y"
-                                                        {return 1;}
-#line 1390 "nutshparser.tab.c"
+#line 49 "nutshparser.y"
+                                                                {(yyval.string) = (yyvsp[0].string);}
+#line 1401 "nutshparser.tab.c"
+    break;
+
+  case 13:
+#line 50 "nutshparser.y"
+                                                        {(yyval.string) = concatArgs((yyval.string), (yyvsp[0].string));}
+#line 1407 "nutshparser.tab.c"
     break;
 
 
-#line 1394 "nutshparser.tab.c"
+#line 1411 "nutshparser.tab.c"
 
       default: break;
     }
@@ -1622,9 +1639,9 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 50 "nutshparser.y"
+#line 53 "nutshparser.y"
 
-
+// wc work.txt -l
 int yyerror(char *s) {
   printf("%s\n",s);
   return 0;
@@ -1635,9 +1652,92 @@ char* concat(const char *s1, const char *s2)
     char *result = malloc(strlen(s1) + strlen(s2) + 1);
     strcpy(result, s1);
     strcat(result, s2);
-	printf("Result: %s", result);
+	//printf("Result: %s\n", result);
     return result;
 }
+
+char* concatArgs(const char *s1, const char *s2)
+{
+    char *result = malloc(strlen(s1) + strlen(s2) + 1);
+    strcpy(result, s1);
+	strcat(result, " ");
+    strcat(result, s2);
+	//printf("Result: %s\n", result);
+    return result;
+}
+
+// Trying to make a catch all for all non built in commands
+int execute(char *cmd, char *args) {
+	pid_t pid;
+
+	int arg_amount = 2;
+	for (int i = 0; i < strlen(args); i++) {
+		if(args[i] == ' '){
+			arg_amount++;
+		}
+	}
+
+	char* paramList[arg_amount];
+	paramList[0] = cmd;
+
+	char *arg = strtok(args, " ");
+	int i = 1;
+	while(arg != NULL){
+		paramList[i] = arg;
+		i++;
+		arg = strtok(NULL, " ");
+	}
+	paramList[i] = NULL;
+
+	char* command = concat("/bin/", cmd);
+
+	if ((pid = fork()) == -1)
+		perror("fork error\n");
+	else if (pid == 0) {
+		execv(command, paramList);
+		printf("Return not expected. Must be an execv error.n\n");
+		exit(0);
+	}
+	else {
+		wait();
+		if(strcmp(cmd, "cat")==0){
+			printf("\n");
+		}
+	}
+}
+
+int runPWD() {
+	getcwd(cwd, sizeof(cwd));
+    printf("%s\n", cwd);
+}
+
+// Use as example for non built in commands with execv and processess
+/*
+int executePWD(char *cmd) {
+	pid_t pid;
+	char* paramList[] = {"pwd", NULL};
+
+	if ((pid = fork()) == -1)
+		perror("fork error");
+	else if (pid == 0) {
+		execv("/bin/pwd", paramList);
+		printf("Return not expected. Must be an execv error.n");
+		exit(0);
+	}
+	else{
+		wait();
+	}
+}
+
+// Use as example for non built in commands with pipes
+char buffer[500];
+FILE *output;
+output = popen("/bin/pwd", "r");
+char *pwd = fgets(buffer, sizeof(buffer), output);
+pwd = strtok(pwd, "\n");
+printf("%s\n", pwd);
+
+*/
 
 int runCD(char* arg) {
 	if (arg[0] != '/') { // arg is relative path
@@ -1740,61 +1840,4 @@ int printForeignDir(char *path){
     }
     closedir(d); 																					// finally close the directory
 	temp[0] = 0;
-}
-
-int runWordCount(char *files){
-
-	char ch;
-    int characters, words, lines;
-
-	char *token = strtok(files, " ");
-
-	while(token != NULL){
-		char *token_copy = malloc(sizeof(token));
-		strcpy(token_copy, token);
-
-		int len = strlen(token_copy);
-		const char *last_four = &token_copy[len-4];
-
-		if(strcmp(last_four, ".txt") != 0){
-			strcat(token_copy, ".txt");
-		}
-
-		FILE *file = fopen(token_copy, "r");
-
-		if(file == NULL){
-			printf("Unable to open file: %s\n", token_copy);
-			return 1;
-		}
-
-		characters = 0;
-		words = 0;
-		lines = 0;
-
-		while ((ch = fgetc(file)) != EOF){
-			characters++;
-			// Check new line
-			if (ch == '\n' || ch == '\0')
-				lines++;
-			// Check words
-			if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\0')
-				words++;
-		}
-
-		// Increment words and lines for last word 
-		if (characters > 0){
-			words++;
-			lines++;
-		}
-
-		// Print file statistics
-		printf("File %s\n", token_copy);
-		printf("Total characters = %d\n", characters);
-		printf("Total words      = %d\n", words);
-		printf("Total lines      = %d\n", lines);
-
-		fclose(file);
-		free(token_copy);
-		token = strtok(NULL, " ");
-	}
 }

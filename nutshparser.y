@@ -21,13 +21,14 @@ int printWorkingDir();
 int printForeignDir(char *path);
 int runWordCount(char *files);
 char* concat(const char *s1, const char *s2);
+char* concatArgs(const char *s1, const char *s2);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END LS WC
-%type <string> WCARGS
+%token <string> BYE CD STRING ALIAS END LS WC PWD PING CAT
+%type <string> ARGS
 
 %%
 cmd_line    :
@@ -37,18 +38,20 @@ cmd_line    :
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
-	| WC WCARGS						
+	| WC ARGS END					{execute("wc", $2); return 1;}
+	| PWD END						{runPWD(); return 1;}
+	| PING ARGS END					{execute("ping", $2); return 1;}
+	| CAT ARGS END					{execute("cat", $2); return 1;}
+
 	;
 	
-WCARGS		:
-	STRING END						{runWordCount($1); return 1;}
-	| STRING						{runWordCount($1);}
-	| WCARGS STRING					{runWordCount($2); $$ = $2;}
-	| WCARGS END					{return 1;}
+ARGS		:
+	STRING							{$$ = $1;}
+	| ARGS STRING					{$$ = concatArgs($$, $2);}
 	;
 	
 %%
-
+// wc work.txt -l
 int yyerror(char *s) {
   printf("%s\n",s);
   return 0;
@@ -59,9 +62,92 @@ char* concat(const char *s1, const char *s2)
     char *result = malloc(strlen(s1) + strlen(s2) + 1);
     strcpy(result, s1);
     strcat(result, s2);
-	printf("Result: %s", result);
+	//printf("Result: %s\n", result);
     return result;
 }
+
+char* concatArgs(const char *s1, const char *s2)
+{
+    char *result = malloc(strlen(s1) + strlen(s2) + 1);
+    strcpy(result, s1);
+	strcat(result, " ");
+    strcat(result, s2);
+	//printf("Result: %s\n", result);
+    return result;
+}
+
+// Trying to make a catch all for all non built in commands
+int execute(char *cmd, char *args) {
+	pid_t pid;
+
+	int arg_amount = 2;
+	for (int i = 0; i < strlen(args); i++) {
+		if(args[i] == ' '){
+			arg_amount++;
+		}
+	}
+
+	char* paramList[arg_amount];
+	paramList[0] = cmd;
+
+	char *arg = strtok(args, " ");
+	int i = 1;
+	while(arg != NULL){
+		paramList[i] = arg;
+		i++;
+		arg = strtok(NULL, " ");
+	}
+	paramList[i] = NULL;
+
+	char* command = concat("/bin/", cmd);
+
+	if ((pid = fork()) == -1)
+		perror("fork error\n");
+	else if (pid == 0) {
+		execv(command, paramList);
+		printf("Return not expected. Must be an execv error.n\n");
+		exit(0);
+	}
+	else {
+		wait();
+		if(strcmp(cmd, "cat")==0){
+			printf("\n");
+		}
+	}
+}
+
+int runPWD() {
+	getcwd(cwd, sizeof(cwd));
+    printf("%s\n", cwd);
+}
+
+// Use as example for non built in commands with execv and processess
+/*
+int executePWD(char *cmd) {
+	pid_t pid;
+	char* paramList[] = {"pwd", NULL};
+
+	if ((pid = fork()) == -1)
+		perror("fork error");
+	else if (pid == 0) {
+		execv("/bin/pwd", paramList);
+		printf("Return not expected. Must be an execv error.n");
+		exit(0);
+	}
+	else{
+		wait();
+	}
+}
+
+// Use as example for non built in commands with pipes
+char buffer[500];
+FILE *output;
+output = popen("/bin/pwd", "r");
+char *pwd = fgets(buffer, sizeof(buffer), output);
+pwd = strtok(pwd, "\n");
+printf("%s\n", pwd);
+
+*/
 
 int runCD(char* arg) {
 	if (arg[0] != '/') { // arg is relative path
@@ -164,61 +250,4 @@ int printForeignDir(char *path){
     }
     closedir(d); 																					// finally close the directory
 	temp[0] = 0;
-}
-
-int runWordCount(char *files){
-
-	char ch;
-    int characters, words, lines;
-
-	char *token = strtok(files, " ");
-
-	while(token != NULL){
-		char *token_copy = malloc(sizeof(token));
-		strcpy(token_copy, token);
-
-		int len = strlen(token_copy);
-		const char *last_four = &token_copy[len-4];
-
-		if(strcmp(last_four, ".txt") != 0){
-			strcat(token_copy, ".txt");
-		}
-
-		FILE *file = fopen(token_copy, "r");
-
-		if(file == NULL){
-			printf("Unable to open file: %s\n", token_copy);
-			return 1;
-		}
-
-		characters = 0;
-		words = 0;
-		lines = 0;
-
-		while ((ch = fgetc(file)) != EOF){
-			characters++;
-			// Check new line
-			if (ch == '\n' || ch == '\0')
-				lines++;
-			// Check words
-			if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\0')
-				words++;
-		}
-
-		// Increment words and lines for last word 
-		if (characters > 0){
-			words++;
-			lines++;
-		}
-
-		// Print file statistics
-		printf("File %s\n", token_copy);
-		printf("Total characters = %d\n", characters);
-		printf("Total words      = %d\n", words);
-		printf("Total lines      = %d\n", lines);
-
-		fclose(file);
-		free(token_copy);
-		token = strtok(NULL, " ");
-	}
 }
