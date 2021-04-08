@@ -534,7 +534,7 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int8 yyrline[] =
 {
        0,    35,    35,    36,    37,    38,    39,    40,    41,    42,
-      47,    48
+      46,    47
 };
 #endif
 
@@ -1379,13 +1379,13 @@ yyreduce:
     break;
 
   case 10:
-#line 47 "nutshparser.y"
+#line 46 "nutshparser.y"
                                                                 {(yyval.string) = (yyvsp[0].string);}
 #line 1385 "nutshparser.tab.c"
     break;
 
   case 11:
-#line 48 "nutshparser.y"
+#line 47 "nutshparser.y"
                                                         {(yyval.string) = concatArgs((yyval.string), (yyvsp[0].string));}
 #line 1391 "nutshparser.tab.c"
     break;
@@ -1623,9 +1623,8 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 51 "nutshparser.y"
+#line 50 "nutshparser.y"
 
-//	| CAT ARGS END					{execute("cat", $2); return 1;}
 
 int yyerror(char *s) {
   printf("%s\n",s);
