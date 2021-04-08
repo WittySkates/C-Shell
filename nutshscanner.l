@@ -38,7 +38,6 @@ ANYCHAR         [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ 
 [ ]		            { }
 bye                 { return BYE;   }
 cd		            { return CD;    }
-ls                  { return LS;    }
 alias		        { return ALIAS; }
 pwd                 { return PWD;   }   
 

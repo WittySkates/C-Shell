@@ -474,18 +474,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  17
+#define YYFINAL  15
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   21
+#define YYLAST   17
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  10
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  3
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  11
+#define YYNRULES  10
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  24
+#define YYNSTATES  21
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   264
@@ -533,8 +533,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    35,    35,    36,    37,    38,    39,    40,    41,    42,
-      46,    47
+       0,    35,    35,    36,    37,    38,    39,    40,    41,    45,
+      46
 };
 #endif
 
@@ -571,9 +571,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,     5,     2,    -1,     9,     3,     8,    16,    -4,    10,
-      -4,    -4,     6,    13,    12,    -4,    -4,    -4,    -4,    -4,
-      -4,    14,    -4,    -4
+      -3,     5,     0,     3,    -1,     6,    14,    -4,     8,    -4,
+      -4,    -4,     4,    11,    -4,    -4,    -4,    -4,    -4,    10,
+      -4
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -581,9 +581,9 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     0,     0,     2,     0,
-       4,    10,     0,     0,     0,     6,     8,     1,     3,    11,
-       9,     0,     7,     5
+       0,     0,     0,     0,     0,     0,     0,     2,     0,     4,
+       9,     7,     0,     0,     6,     1,     3,    10,     8,     0,
+       5
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -595,7 +595,7 @@ static const yytype_int8 yypgoto[] =
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     7,    12
+      -1,     6,    12
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -603,39 +603,37 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,     3,     4,    11,     5,     6,     9,    14,    10,
-      15,    19,     8,    20,    13,    16,    17,    18,    21,    22,
-       0,    23
+       1,     2,     3,     4,    13,     8,     5,     9,    10,    17,
+      11,    18,     7,    14,    15,    16,    19,    20
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     4,     5,     6,     5,     8,     9,     5,     5,     7,
-       7,     5,     7,     7,     5,     7,     0,     7,     5,     7,
-      -1,     7
+       3,     4,     5,     6,     5,     5,     9,     7,     5,     5,
+       7,     7,     7,     7,     0,     7,     5,     7
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     5,     6,     8,     9,    11,     7,     5,
-       7,     5,    12,     5,     5,     7,     7,     0,     7,     5,
-       7,     5,     7,     7
+       0,     3,     4,     5,     6,     9,    11,     7,     5,     7,
+       5,     7,    12,     5,     7,     0,     7,     5,     7,     5,
+       7
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    10,    11,    11,    11,    11,    11,    11,    11,    11,
-      12,    12
+       0,    10,    11,    11,    11,    11,    11,    11,    11,    12,
+      12
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     3,     2,     4,     2,     3,     2,     3,
-       1,     2
+       0,     2,     2,     3,     2,     4,     2,     2,     3,     1,
+       2
 };
 
 
@@ -1333,65 +1331,59 @@ yyreduce:
   case 2:
 #line 35 "nutshparser.y"
                                                                 {exit(1); return 1; }
-#line 1337 "nutshparser.tab.c"
+#line 1335 "nutshparser.tab.c"
     break;
 
   case 3:
 #line 36 "nutshparser.y"
                                                         {runCD((yyvsp[-1].string)); return 1;}
-#line 1343 "nutshparser.tab.c"
+#line 1341 "nutshparser.tab.c"
     break;
 
   case 4:
 #line 37 "nutshparser.y"
                                                                 {homeCD(); return 1;}
-#line 1349 "nutshparser.tab.c"
+#line 1347 "nutshparser.tab.c"
     break;
 
   case 5:
 #line 38 "nutshparser.y"
                                                 {runSetAlias((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1355 "nutshparser.tab.c"
+#line 1353 "nutshparser.tab.c"
     break;
 
   case 6:
 #line 39 "nutshparser.y"
-                                                                {printWorkingDir(); return 1;}
-#line 1361 "nutshparser.tab.c"
+                                                                {runPWD(); return 1;}
+#line 1359 "nutshparser.tab.c"
     break;
 
   case 7:
 #line 40 "nutshparser.y"
-                                                        {printForeignDir((yyvsp[-1].string)); return 1;}
-#line 1367 "nutshparser.tab.c"
+                                                        {execute((yyvsp[-1].string), ""); return 1;}
+#line 1365 "nutshparser.tab.c"
     break;
 
   case 8:
 #line 41 "nutshparser.y"
-                                                                {runPWD(); return 1;}
-#line 1373 "nutshparser.tab.c"
+                                                        {execute((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
+#line 1371 "nutshparser.tab.c"
     break;
 
   case 9:
-#line 42 "nutshparser.y"
-                                                        {execute((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1379 "nutshparser.tab.c"
+#line 45 "nutshparser.y"
+                                                                {(yyval.string) = (yyvsp[0].string);}
+#line 1377 "nutshparser.tab.c"
     break;
 
   case 10:
 #line 46 "nutshparser.y"
-                                                                {(yyval.string) = (yyvsp[0].string);}
-#line 1385 "nutshparser.tab.c"
-    break;
-
-  case 11:
-#line 47 "nutshparser.y"
                                                         {(yyval.string) = concatArgs((yyval.string), (yyvsp[0].string));}
-#line 1391 "nutshparser.tab.c"
+#line 1383 "nutshparser.tab.c"
     break;
 
 
-#line 1395 "nutshparser.tab.c"
+#line 1387 "nutshparser.tab.c"
 
       default: break;
     }
@@ -1623,7 +1615,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 50 "nutshparser.y"
+#line 49 "nutshparser.y"
 
 
 int yyerror(char *s) {
