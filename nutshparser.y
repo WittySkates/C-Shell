@@ -27,7 +27,7 @@ char* concatArgs(const char *s1, const char *s2);
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END LS WC PWD PING CAT
+%token <string> BYE CD STRING ALIAS END LS PWD
 %type <string> ARGS
 
 %%
@@ -38,11 +38,8 @@ cmd_line    :
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
-	| WC ARGS END					{execute("wc", $2); return 1;}
 	| PWD END						{runPWD(); return 1;}
-	| PING ARGS END					{execute("ping", $2); return 1;}
-	| CAT ARGS END					{execute("cat", $2); return 1;}
-
+	| STRING ARGS END				{execute($1, $2); return 1;}
 	;
 	
 ARGS		:
@@ -51,7 +48,7 @@ ARGS		:
 	;
 	
 %%
-// wc work.txt -l
+
 int yyerror(char *s) {
   printf("%s\n",s);
   return 0;

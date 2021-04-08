@@ -40,10 +40,7 @@ bye                 { return BYE;   }
 cd		            { return CD;    }
 ls                  { return LS;    }
 alias		        { return ALIAS; }
-wc                  { return WC;    }
 pwd                 { return PWD;   }   
-ping                { return PING;  }
-cat                 { return CAT;  }
 
 "\n"		        { return END;   }
 [\"]                 { BEGIN(string_condition); }

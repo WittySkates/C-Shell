@@ -55,10 +55,7 @@ extern int yydebug;
     ALIAS = 261,
     END = 262,
     LS = 263,
-    WC = 264,
-    PWD = 265,
-    PING = 266,
-    CAT = 267
+    PWD = 264
   };
 #endif
 
@@ -69,7 +66,7 @@ union YYSTYPE
 #line 27 "nutshparser.y"
 char *string;
 
-#line 73 "nutshparser.tab.h"
+#line 70 "nutshparser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
