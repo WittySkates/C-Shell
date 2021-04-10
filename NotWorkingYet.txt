@@ -1,4 +1,6 @@
-This is a list of all the things that are not currently working. This is based off of the sample commands document that micheal posted on canvas. Please delete something when you have completed it :)
+This is a list of all the things that are not currently working. 
+This is based off of the sample commands document that micheal posted on canvas. 
+Please delete something when you have completed it :)
 
 
 -PATH env should be colon delimited string
@@ -6,12 +8,10 @@ This is a list of all the things that are not currently working. This is based o
 -running executables from the shell
 -ssh command
 -echo command
--date command
 -ping command
 -rm command
 -tty command
 -touch command
--mkdir command
 -rmdir command
 -Input/Output with < >
 -cat command

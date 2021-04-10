@@ -61,7 +61,8 @@ extern int yydebug;
     SETENV = 267,
     PRINTENV = 268,
     UNSETENV = 269,
-    DATE = 270
+    DATE = 270,
+    MAKEDIR = 271
   };
 #endif
 
@@ -69,10 +70,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 33 "nutshparser.y"
+#line 35 "nutshparser.y"
 char *string;
 
-#line 76 "nutshparser.tab.h"
+#line 77 "nutshparser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

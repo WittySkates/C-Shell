@@ -14,6 +14,7 @@
 
 int yylex(void);
 int yyerror(char *s);
+int mkdir(const char *pathname, mode_t mode);
 int getlogin_r(char *buf, size_t bufsize);
 int runCD(char* arg);
 int homeCD();
@@ -28,12 +29,13 @@ int setEnv(char *variable, char *word);
 int printEnv();
 int unsetEnv(char *variable);
 int printDate();
+int makeDir(char *name);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS UNALIAS END LS WC PWD SETENV PRINTENV UNSETENV DATE
+%token <string> BYE CD STRING ALIAS UNALIAS END LS WC PWD SETENV PRINTENV UNSETENV DATE MAKEDIR
 
 %%
 cmd_line    :
@@ -51,6 +53,7 @@ cmd_line    :
 	| PRINTENV END					{printEnv(); return 1;			}
 	| UNSETENV STRING END			{unsetEnv($2); return 1;		}
 	| DATE END 						{printDate(); return 1;			}
+	| MAKEDIR STRING END			{makeDir($2); return 1;			}
 
 %%
 
@@ -289,4 +292,15 @@ int printDate(){
 	time(&t);
 	printf("%s\n", ctime(&t));
 	return 1;
+}
+
+int makeDir(char *name){
+	int status;
+	status = mkdir(name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH); // Ceate a directory with read/write/search permissions 
+	if(status == 0){											// for owner and group, and with read/search permissions for others.
+		return 1;
+	}
+	else{
+		printf("unable to create the directory\n");
+	}														
 }
