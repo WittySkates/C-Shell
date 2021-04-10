@@ -22,12 +22,15 @@ int printForeignDir(char *path);
 int runWordCount(char *files);
 char* concat(const char *s1, const char *s2);
 char* concatArgs(const char *s1, const char *s2);
+int setEnv(char *variable, char *word);
+int printEnv();
+int unsetEnv(char *variable);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END PWD
+%token <string> BYE CD STRING ALIAS END PWD SETENV PRINTENV UNSETENV
 %type <string> ARGS
 
 %%
@@ -39,6 +42,9 @@ cmd_line    :
 	| PWD END						{runPWD(); return 1;}
 	| STRING END					{execute($1, ""); return 1;}
 	| STRING ARGS END				{execute($1, $2); return 1;}
+	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
+	| PRINTENV END					{printEnv(); return 1;}
+	|UNSETENV STRING END			{unsetEnv($2); return 1;}
 	;
 	
 ARGS		:
@@ -179,43 +185,38 @@ int runSetAlias(char *name, char *word) {
 	return 1;
 }
 
-// int printWorkingDir(){
-// 	DIR * d = opendir(varTable.word[0]); 															// open the path
-//   	if(d==NULL) return 1; 																			// if was not able return
-//   	struct dirent * dir; 																			// for the directory entries
-//   	while ((dir = readdir(d)) != NULL) 																// if we were able to read somehting from the directory
-//     {
-//       if(dir-> d_type != DT_DIR) 																	// if the type is not directory just print it with blue
-//         printf("%s%s\n",BLUE, dir->d_name);
-//       else if(dir -> d_type == DT_DIR && strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0 ) // if it is a directory
-//       {
-//         printf("%s%s\n",GREEN, dir->d_name); 														// print its name in green
-//         char d_path[255]; 																			// here I am using sprintf which is safer than strcat
-//         sprintf(d_path, "%s/%s", varTable.word[0], dir->d_name);
-//       }
-//     }
-//     closedir(d); 																					// finally close the directory
-// }
+int setEnv(char *variable, char *word){
+	for(int i = 0; i < varIndex; i++){
+		if(strcmp(varTable.var[i], variable) == 0){
+			strcpy(varTable.word[i], word);
+			return 1;
+		}
+	}
+	strcpy(varTable.var[varIndex], variable);
+    strcpy(varTable.word[varIndex], word);
+    varIndex++;
+	return 1;
+}
 
-// int printForeignDir(char *path){
-// 	char temp[PATH_MAX];
-// 	strcat(temp, varTable.word[0]);																	// create a string of the pwd/path
-// 	strcat(temp, "/");
-// 	strcat(temp, path);
-// 	DIR * d = opendir(temp); 																		// open the path
-//   	if(d==NULL) return 1; 																			// if was not able return
-//   	struct dirent * dir; 																			// for the directory entries
-//   	while ((dir = readdir(d)) != NULL) 																// if we were able to read somehting from the directory
-//     {
-//       if(dir-> d_type != DT_DIR) 																	// if the type is not directory just print it with blue
-//         printf("%s%s\n",BLUE, dir->d_name);
-//       else if(dir -> d_type == DT_DIR && strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0 ) // if it is a directory
-//       {
-//         printf("%s%s\n",GREEN, dir->d_name); 														// print its name in green
-//         char d_path[255]; 																			// here I am using sprintf which is safer than strcat
-//         sprintf(d_path, "%s/%s", temp, dir->d_name);
-//       }
-//     }
-//     closedir(d); 																					// finally close the directory
-// 	temp[0] = 0;
-// }
+int printEnv(){
+	for(int i = 0; i < varIndex; i++){
+		printf("%s=%s\n", varTable.var[i], varTable.word[i]);
+	}
+}
+
+int unsetEnv(char *variable){
+	for(int i = 0; i < varIndex; i++){
+		if(strcmp(varTable.var[i], "PATH") == 0){
+			fprintf(stderr, "The 'PATH' variable cannot be unbound\n");
+			return 1;
+		}
+		else if(strcmp(varTable.var[i], "HOME") == 0){
+			fprintf(stderr, "The 'HOME' variable cannot be unbound\n");
+			return 1;
+		}
+		else if(strcmp(varTable.var[i], variable) == 0){
+			strcpy(varTable.word[i], "");
+			return 1;
+		}
+	}
+}
