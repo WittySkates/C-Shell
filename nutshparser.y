@@ -206,11 +206,11 @@ int printEnv(){
 
 int unsetEnv(char *variable){
 	for(int i = 0; i < varIndex; i++){
-		if(strcmp(varTable.var[i], "PATH") == 0){
+		if(strcmp(variable, "PATH") == 0){
 			fprintf(stderr, "The 'PATH' variable cannot be unbound\n");
 			return 1;
 		}
-		else if(strcmp(varTable.var[i], "HOME") == 0){
+		else if(strcmp(variable, "HOME") == 0){
 			fprintf(stderr, "The 'HOME' variable cannot be unbound\n");
 			return 1;
 		}
@@ -219,4 +219,5 @@ int unsetEnv(char *variable){
 			return 1;
 		}
 	}
+	printf("Error: variable not found!\n");
 }
