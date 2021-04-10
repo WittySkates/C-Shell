@@ -47,6 +47,7 @@ pwd                 { return PWD;       }
 setenv              { return SETENV;    }
 printenv            { return PRINTENV;  }
 unsetenv            { return UNSETENV;  }
+date                { return DATE;      }
 "\n"		        { return END;       }
 [\"]                 { BEGIN(string_condition); }
 {CHAR}+              {if(ifAlias(yytext)) {

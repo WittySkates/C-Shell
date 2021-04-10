@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <time.h>
 #include "global.h"
 
 int yylex(void);
@@ -26,28 +27,30 @@ int pwd();
 int setEnv(char *variable, char *word);
 int printEnv();
 int unsetEnv(char *variable);
+int printDate();
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS UNALIAS END LS WC PWD SETENV PRINTENV UNSETENV
+%token <string> BYE CD STRING ALIAS UNALIAS END LS WC PWD SETENV PRINTENV UNSETENV DATE
 
 %%
 cmd_line    :
-	BYE END 		                {exit(1); return 1; }
-	| CD STRING END        			{runCD($2); return 1;}
-	| CD END						{homeCD(); return 1;}
-	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
-	| ALIAS END						{listAlias(); return 1;}
-	| UNALIAS STRING END			{removeAlias($2); return 1;}
-	| LS END						{printWorkingDir(); return 1;}
-	| LS STRING END					{printForeignDir($2); return 1;}
-	| WC STRING END					{runWordCount($2); return 1;}	
-	| PWD END						{pwd(); return 1;}
-	| SETENV STRING STRING END 		{setEnv($2, $3); return 1;}	
-	| PRINTENV END					{printEnv(); return 1;}
-	| UNSETENV STRING END			{unsetEnv($2); return 1;}
+	BYE END 		                {exit(1); return 1; 			}
+	| CD STRING END        			{runCD($2); return 1;			}
+	| CD END						{homeCD(); return 1;			}
+	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;	}
+	| ALIAS END						{listAlias(); return 1;			}
+	| UNALIAS STRING END			{removeAlias($2); return 1;		}
+	| LS END						{printWorkingDir(); return 1;	}
+	| LS STRING END					{printForeignDir($2); return 1;	}
+	| WC STRING END					{runWordCount($2); return 1;	}	
+	| PWD END						{pwd(); return 1;				}
+	| SETENV STRING STRING END 		{setEnv($2, $3); return 1;		}	
+	| PRINTENV END					{printEnv(); return 1;			}
+	| UNSETENV STRING END			{unsetEnv($2); return 1;		}
+	| DATE END 						{printDate(); return 1;			}
 
 %%
 
@@ -279,4 +282,11 @@ int unsetEnv(char *variable){
 			return 1;
 		}
 	}
+}
+
+int printDate(){
+	time_t t;
+	time(&t);
+	printf("%s\n", ctime(&t));
+	return 1;
 }
