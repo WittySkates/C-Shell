@@ -1871,7 +1871,15 @@ int printEnv(){
 
 int unsetEnv(char *variable){
 	for(int i = 0; i < varIndex; i++){
-		if(strcmp(varTable.var[i], variable) == 0){
+		if(strcmp(varTable.var[i], "PATH") == 0){
+			fprintf(stderr, "The 'PATH' variable cannot be unbound\n");
+			return 1;
+		}
+		else if(strcmp(varTable.var[i], "HOME") == 0){
+			fprintf(stderr, "The 'HOME' variable cannot be unbound\n");
+			return 1;
+		}
+		else if(strcmp(varTable.var[i], variable) == 0){
 			strcpy(varTable.word[i], "");
 			return 1;
 		}
