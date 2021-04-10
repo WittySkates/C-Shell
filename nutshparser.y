@@ -97,6 +97,10 @@ int homeCD() {											// function to change directory to /home/user
 }
 
 int runSetAlias(char *name, char *word) {
+	if(strcmp(name, word) == 0){
+		printf("Error, %s=%s would create a loop.\n", name, word);
+		return 1;
+	}
 	for (int i = 0; i < aliasIndex; i++) {
 		if(strcmp(name, word) == 0){
 			printf("Error, expansion of \"%s\" would create a loop.\n", name);
