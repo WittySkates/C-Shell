@@ -37,14 +37,17 @@ ANYCHAR            [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -]
 <string_condition>[\"]          {BEGIN(INITIAL);}
 
 [ ]		            { }
-bye                 { return BYE;   }
-cd		            { return CD;    }
-ls                  { return LS;    }
-alias		        { return ALIAS; }
-unalias             { return UNALIAS; }
-wc                  { return WC;    }
-pwd                 { return PWD;   }
-"\n"		        { return END;   }
+bye                 { return BYE;       }
+cd		            { return CD;        }
+ls                  { return LS;        }
+alias		        { return ALIAS;     }
+unalias             { return UNALIAS;   }
+wc                  { return WC;        }
+pwd                 { return PWD;       }
+setenv              { return SETENV;    }
+printenv            { return PRINTENV;  }
+unsetenv            { return UNSETENV;  }
+"\n"		        { return END;       }
 [\"]                 { BEGIN(string_condition); }
 {CHAR}+              {if(ifAlias(yytext)) {
                         printf("yytext: %s\n", yytext);

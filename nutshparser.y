@@ -23,12 +23,15 @@ int printWorkingDir();
 int printForeignDir(char *path);
 int runWordCount(char *path);
 int pwd();
+int setEnv(char *variable, char *word);
+int printEnv();
+int unsetEnv(char *variable);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS UNALIAS END LS WC PWD
+%token <string> BYE CD STRING ALIAS UNALIAS END LS WC PWD SETENV PRINTENV UNSETENV
 
 %%
 cmd_line    :
@@ -41,7 +44,10 @@ cmd_line    :
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
 	| WC STRING END					{runWordCount($2); return 1;}	
-	| PWD END						{pwd(); return 1;}		
+	| PWD END						{pwd(); return 1;}
+	| SETENV STRING STRING END 		{setEnv($2, $3); return 1;}	
+	| PRINTENV END					{printEnv(); return 1;}
+	| UNSETENV STRING END			{unsetEnv($2); return 1;}
 
 %%
 
@@ -229,8 +235,36 @@ int runWordCount(char *path){
     fclose(file);
 }
 
-pwd(){
+int pwd(){
 	printf(varTable.word[0]);
 	printf("\n");
 	return 1;
+}
+
+int setEnv(char *variable, char *word){
+	for(int i = 0; i < varIndex; i++){
+		if(strcmp(varTable.var[i], variable) == 0){
+			strcpy(varTable.word[i], word);
+			return 1;
+		}
+	}
+	strcpy(varTable.var[varIndex], variable);
+    strcpy(varTable.word[varIndex], word);
+    varIndex++;
+	return 1;
+}
+
+int printEnv(){
+	for(int i = 0; i < varIndex; i++){
+		printf("%s=%s\n", varTable.var[i], varTable.word[i]);
+	}
+}
+
+int unsetEnv(char *variable){
+	for(int i = 0; i < varIndex; i++){
+		if(strcmp(varTable.var[i], variable) == 0){
+			strcpy(varTable.word[i], "");
+			return 1;
+		}
+	}
 }
