@@ -220,4 +220,5 @@ int unsetEnv(char *variable){
 		}
 	}
 	printf("Error: variable not found!\n");
+	return 1;
 }
