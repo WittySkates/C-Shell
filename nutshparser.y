@@ -22,12 +22,13 @@ int removeAlias(char *name);
 int printWorkingDir();
 int printForeignDir(char *path);
 int runWordCount(char *path);
+int pwd();
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS UNALIAS END LS WC
+%token <string> BYE CD STRING ALIAS UNALIAS END LS WC PWD
 
 %%
 cmd_line    :
@@ -39,7 +40,8 @@ cmd_line    :
 	| UNALIAS STRING END			{removeAlias($2); return 1;}
 	| LS END						{printWorkingDir(); return 1;}
 	| LS STRING END					{printForeignDir($2); return 1;}
-	| WC STRING END					{runWordCount($2); return 1;}			
+	| WC STRING END					{runWordCount($2); return 1;}	
+	| PWD END						{pwd(); return 1;}		
 
 %%
 
@@ -225,4 +227,10 @@ int runWordCount(char *path){
     printf("Total lines      = %d\n", lines);
 
     fclose(file);
+}
+
+pwd(){
+	printf(varTable.word[0]);
+	printf("\n");
+	return 1;
 }

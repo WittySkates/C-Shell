@@ -43,6 +43,7 @@ ls                  { return LS;    }
 alias		        { return ALIAS; }
 unalias             { return UNALIAS; }
 wc                  { return WC;    }
+pwd                 { return PWD;   }
 "\n"		        { return END;   }
 [\"]                 { BEGIN(string_condition); }
 {CHAR}+              {if(ifAlias(yytext)) {
