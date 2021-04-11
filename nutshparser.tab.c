@@ -1783,14 +1783,20 @@ int homeCD() {											// function to change directory to /home/user
 		return 1;
 	}
 }
-
+// a b
+// b a
 int runSetAlias(char *name, char *word) {
-	for (int i = 0; i < aliasIndex; i++) {
-		if(strcmp(name, word) == 0){
+	// printf("NAME: %s WORD: %s\n", name, word);
+	// int p = strcmp(name, word);
+	// printf("OUT: %d\n", name, word);
+
+	if(strcmp(name, word) == 0){
 			printf("Error, expansion of \"%s\" would create a loop.\n", name);
 			return 1;
-		}
-		else if((strcmp(aliasTable.name[i], name) == 0) && (strcmp(aliasTable.word[i], word) == 0)){
+	}
+	for (int i = 0; i < aliasIndex; i++) {
+	
+		if((strcmp(aliasTable.name[i], name) == 0) || (strcmp(aliasTable.word[i], word) == 0) || (strcmp(aliasTable.name[i], word) == 0)){
 			printf("Error, expansion of \"%s\" would create a loop.\n", name);
 			return 1;
 		}

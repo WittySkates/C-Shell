@@ -813,12 +813,12 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 41 "nutshscanner.l"
-{ return ALIAS; }
+{ isStart = true; return ALIAS; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 42 "nutshscanner.l"
-{ isUnalias = true; return UNALIAS;}
+{ isStart = true; return UNALIAS;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
@@ -844,7 +844,7 @@ case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
 #line 48 "nutshscanner.l"
-{ return END;   }
+{ isStart = false; return END;   }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
@@ -854,27 +854,26 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 50 "nutshscanner.l"
-{if(ifAlias(yytext) && !isUnalias) {
+{if(ifAlias(yytext) && !isStart) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );
                            for ( int i = strlen(subAliases(yytext)) - 1; i >= 0; --i )
-                               unput( yycopy[i] );
-                           free( yycopy );
+                                unput( yycopy[i] );
+                            free( yycopy );
                     } else {
                         printf("yytext: %s\n", yytext);
                         yylval.string = strdup(yytext);
-                        isUnalias = false;
                         return STRING;
                     };
                      }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 64 "nutshscanner.l"
+#line 63 "nutshscanner.l"
 ECHO;
 	YY_BREAK
-#line 878 "lex.yy.c"
+#line 877 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(string_condition):
 	yyterminate();
@@ -1880,5 +1879,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 64 "nutshscanner.l"
+#line 63 "nutshscanner.l"
 

@@ -38,26 +38,25 @@ ANYCHAR         [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ 
 [ ]		            { }
 bye                 { return BYE;   }
 cd		            { return CD;    }
-alias		        { return ALIAS; }
-unalias             { isUnalias = true; return UNALIAS;}
+alias		        { isStart = true; return ALIAS; }
+unalias             { isStart = true; return UNALIAS;}
 pwd                 { return PWD;   }
 setenv              { return SETENV;}
 unsetenv            { return UNSETENV;}
 printenv            { return PRINTENV;}   
 
-"\n"		        { return END;   }
-[\"]                 { BEGIN(string_condition); }
-{CHAR}+              {if(ifAlias(yytext) && !isUnalias) {
+"\n"		        { isStart = false; return END;   }
+[\"]                { BEGIN(string_condition); }
+{CHAR}+             {if(ifAlias(yytext) && !isStart) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );
                            for ( int i = strlen(subAliases(yytext)) - 1; i >= 0; --i )
-                               unput( yycopy[i] );
-                           free( yycopy );
+                                unput( yycopy[i] );
+                            free( yycopy );
                     } else {
                         printf("yytext: %s\n", yytext);
                         yylval.string = strdup(yytext);
-                        isUnalias = false;
                         return STRING;
                     };
                      }
