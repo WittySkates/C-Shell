@@ -818,7 +818,7 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 42 "nutshscanner.l"
-{ return UNALIAS;}
+{ strcpy(prevtoken, "unalias"); return UNALIAS;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
@@ -854,7 +854,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 50 "nutshscanner.l"
-{if(ifAlias(yytext)) {
+{if(ifAlias(yytext) && strcmp(prevtoken, "unalias") != 0) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );

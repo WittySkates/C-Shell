@@ -48,7 +48,7 @@ cmd_line    :
 	| STRING ARGS END				{execute($1, $2); return 1;}
 	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
 	| PRINTENV END					{printEnv(); return 1;}
-	|UNSETENV STRING END			{unsetEnv($2); return 1;}
+	| UNSETENV STRING END			{unsetEnv($2); return 1;}
 	;
 	
 ARGS		:

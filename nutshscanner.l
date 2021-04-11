@@ -39,7 +39,7 @@ ANYCHAR         [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ 
 bye                 { return BYE;   }
 cd		            { return CD;    }
 alias		        { return ALIAS; }
-unalias             { return UNALIAS;}
+unalias             { strcpy(prevtoken, "unalias"); return UNALIAS;}
 pwd                 { return PWD;   }
 setenv              { return SETENV;}
 unsetenv            { return UNSETENV;}
@@ -47,7 +47,7 @@ printenv            { return PRINTENV;}
 
 "\n"		        { return END;   }
 [\"]                 { BEGIN(string_condition); }
-{CHAR}+              {if(ifAlias(yytext)) {
+{CHAR}+              {if(ifAlias(yytext) && strcmp(prevtoken, "unalias") != 0) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );
