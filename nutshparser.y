@@ -92,29 +92,39 @@ int execute(char *cmd, char *args) {
 	char* paramList[arg_amount];
 	paramList[0] = cmd;
 
-	char *arg = strtok(args, " ");
+	char* arg = strtok(args, " ");
 	int i = 1;
 	while(arg != NULL){
 		paramList[i] = arg;
 		i++;
 		arg = strtok(NULL, " ");
 	}
+
 	paramList[i] = NULL;
 
-	char* command = concat("/bin/", cmd);
+	char* cpath = malloc(sizeof(varTable.word[3]));
+	strcpy(cpath, varTable.word[3]);
+	char* path = strtok(cpath, ":");
 
-	if ((pid = fork()) == -1)
-		perror("fork error\n");
-	else if (pid == 0) {
-		execv(command, paramList);
-		printf("Return not expected. Must be an execv error.n\n");
-		exit(0);
-	}
-	else {
-		wait();
-		if(strcmp(cmd, "cat")==0){
-			printf("\n");
+	while(path != NULL){
+
+		char* temp = concat(path, "/");
+		char* command = concat(temp, cmd);
+
+		if ((pid = fork()) == -1)
+			perror("fork error\n");
+		else if (pid == 0) {
+			execv(command, paramList);
+			//printf("Return not expected. Must be an execv error.n\n");
+			exit(0);
 		}
+		else {
+			wait();
+			if(strcmp(cmd, "cat")==0){
+				printf("\n");
+			}
+		}
+		path = strtok(NULL, ":");
 	}
 }
 
