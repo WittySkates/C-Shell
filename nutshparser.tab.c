@@ -1808,6 +1808,8 @@ int runSetAlias(char *name, char *word) {
 
 int removeAlias(char *name){
 	int isFound = 0;
+	char *aliasName[128];
+	strcpy(aliasName, name);
 	for (int i = 0; i < aliasIndex; i++) {
 		if(strcmp(aliasTable.name[i], name) == 0){
 			isFound = 1;
@@ -1823,7 +1825,7 @@ int removeAlias(char *name){
 		return 1;
 	}
 	else{
-		printf("There is no alias with the name: %s\n", name);
+		printf("There is no alias with the name: %s\n", aliasName);
 		return 1;
 	}
 }
