@@ -14,6 +14,7 @@ int main()
 {
     aliasIndex = 0;
     varIndex = 0;
+    isUnalias = false;
 
     getcwd(cwd, sizeof(cwd));
 
