@@ -227,7 +227,7 @@ int removeAlias(char *name){
 int listAlias(){
 	for (int i = 0; i < aliasIndex; i++) {
 		printf(aliasTable.name[i]);
-		printf(": ");
+		printf("=");
 		printf(aliasTable.word[i]);
 		printf("\n");
 	}
