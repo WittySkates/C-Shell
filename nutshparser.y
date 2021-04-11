@@ -17,6 +17,8 @@ int getlogin_r(char *buf, size_t bufsize);
 int runCD(char* arg);
 int homeCD();
 int runSetAlias(char *name, char *word);
+int removeAlias(char *name);
+int listAlias();
 int printWorkingDir();
 int printForeignDir(char *path);
 int runWordCount(char *files);
@@ -30,7 +32,7 @@ int unsetEnv(char *variable);
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END PWD SETENV PRINTENV UNSETENV
+%token <string> BYE CD STRING ALIAS UNALIAS END PWD SETENV PRINTENV UNSETENV 
 %type <string> ARGS
 
 %%
@@ -39,6 +41,8 @@ cmd_line    :
 	| CD STRING END					{runCD($2); return 1;}
 	| CD END						{homeCD(); return 1;}
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
+	| ALIAS END						{listAlias(); return 1;}
+	| UNALIAS STRING END			{removeAlias($2); return 1;}
 	| PWD END						{runPWD(); return 1;}
 	| STRING END					{execute($1, ""); return 1;}
 	| STRING ARGS END				{execute($1, $2); return 1;}
@@ -193,6 +197,37 @@ int runSetAlias(char *name, char *word) {
 	aliasIndex++;
 
 	return 1;
+}
+
+int removeAlias(char *name){
+	int isFound = 0;
+	for (int i = 0; i < aliasIndex; i++) {
+		if(strcmp(aliasTable.name[i], name) == 0){
+			isFound = 1;
+			for(int j = i; j < aliasIndex-1; j++){
+				strcpy(aliasTable.name[j], aliasTable.name[j+1]);
+				strcpy(aliasTable.word[j], aliasTable.word[j+1]);
+			}
+			break;
+		}
+	}
+	if(isFound == 1){
+		aliasIndex--;
+		return 1;
+	}
+	else{
+		printf("There is no alias with the name: %s\n", name);
+		return 1;
+	}
+}
+
+int listAlias(){
+	for (int i = 0; i < aliasIndex; i++) {
+		printf(aliasTable.name[i]);
+		printf(": ");
+		printf(aliasTable.word[i]);
+		printf("\n");
+	}
 }
 
 int setEnv(char *variable, char *word){
