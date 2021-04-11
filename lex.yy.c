@@ -818,7 +818,7 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 42 "nutshscanner.l"
-{ strcpy(prevtoken, "unalias"); return UNALIAS;}
+{ isUnalias = true; return UNALIAS;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
@@ -854,7 +854,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 50 "nutshscanner.l"
-{if(ifAlias(yytext) && strcmp(prevtoken, "unalias") != 0) {
+{if(ifAlias(yytext) && !isUnalias) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );
@@ -864,16 +864,17 @@ YY_RULE_SETUP
                     } else {
                         printf("yytext: %s\n", yytext);
                         yylval.string = strdup(yytext);
+                        isUnalias = false;
                         return STRING;
                     };
                      }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 63 "nutshscanner.l"
+#line 64 "nutshscanner.l"
 ECHO;
 	YY_BREAK
-#line 877 "lex.yy.c"
+#line 878 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(string_condition):
 	yyterminate();
@@ -1879,5 +1880,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 63 "nutshscanner.l"
+#line 64 "nutshscanner.l"
 

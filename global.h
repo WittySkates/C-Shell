@@ -23,6 +23,6 @@ struct aTable aliasTable;
 
 int aliasIndex, varIndex;
 
-char prevtoken[128]; 
+bool isUnalias; 
 
 char* subAliases(char* name);
