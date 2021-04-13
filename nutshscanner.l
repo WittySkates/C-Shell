@@ -54,7 +54,7 @@ ENV             \$\{
 <string_condition>[\"]          {BEGIN(INITIAL);}
 <string_condition>{ENV}         {BEGIN(is_env);}
 
-<is_env>{ANYCHAR}+              {
+<is_env>{CHAR}+              {
                                     if(ifEnv(yytext)) {
                                         printf("yytext: %s\n", yytext);
                                         char *yycopy = strdup(subEnv(yytext) );
