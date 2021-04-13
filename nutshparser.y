@@ -33,7 +33,7 @@ int unsetEnv(char *variable);
 
 %start cmd_line
 %token <string> BYE CD STRING ALIAS UNALIAS END PWD SETENV PRINTENV UNSETENV 
-%type <string> ARGS
+%type <string> ARGS SET
 
 %%
 cmd_line    :
@@ -46,7 +46,7 @@ cmd_line    :
 	| PWD END						{runPWD(); return 1;}
 	| STRING END					{execute($1, ""); return 1;}
 	| STRING ARGS END				{execute($1, $2); return 1;}
-	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
+	| SETENV STRING SET END			{setEnv($2, $3); return 1;}
 	| PRINTENV END					{printEnv(); return 1;}
 	| UNSETENV STRING END			{unsetEnv($2); return 1;}
 	;
@@ -55,7 +55,11 @@ ARGS		:
 	STRING							{$$ = $1;}
 	| ARGS STRING					{$$ = concatArgs($$, $2);}
 	;
-	
+
+SET		:
+	STRING							{$$ = $1;}
+	| SET STRING					{$$ = concat($$, $2);}
+	;
 %%
 
 int yyerror(char *s) {

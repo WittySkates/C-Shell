@@ -16,6 +16,7 @@ int main()
     varIndex = 0;
     isStart = false;
     count = 0;
+    isStringCond = false;
 
     getcwd(cwd, sizeof(cwd));
 

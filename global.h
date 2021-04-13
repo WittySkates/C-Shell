@@ -24,6 +24,7 @@ struct aTable aliasTable;
 int aliasIndex, varIndex;
 
 bool isStart;
+bool isStringCond;
 int count;
 
 char* subAliases(char* name);

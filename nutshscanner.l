@@ -46,31 +46,43 @@ bool ifEnv(char* var){
 %x is_env
 
 CHAR            [.A-Za-z0-9!\/_-][.A-Za-z0-9!\/_-]*
-ANYCHAR         [}{)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][}{)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -]*
+ANYCHAR         [)(*&%#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%#@!`;,\.a-zA-Z0-9'/*_=~ -]*
 ENV             \$\{
 %%
 
 <string_condition>{ANYCHAR}+    { yylval.string = strdup(yytext); printf("yytext: %s\n", yytext); return STRING;}
 <string_condition>[\"]          {BEGIN(INITIAL);}
+<string_condition>{ENV}         {BEGIN(is_env);}
 
-<is_env>{CHAR}+                 {
+<is_env>{ANYCHAR}+              {
                                     if(ifEnv(yytext)) {
                                         printf("yytext: %s\n", yytext);
-                                        //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                                         char *yycopy = strdup(subEnv(yytext) );
                                         for ( int i = strlen(subEnv(yytext)) - 1; i >= 0; --i )
                                                 unput( yycopy[i] );
                                             free( yycopy );
-                                        BEGIN(INITIAL);
                                     }
-                                    else {
+                                    else {    
                                         printf("yytext: %s\n", yytext);
                                         yylval.string = strdup(yytext);
-                                        return STRING;
+                                        if(!isStringCond){
+                                            char *yycopy = strdup(yytext);
+                                            for ( int i = strlen(yytext) - 1; i >= 0; --i )
+                                                unput( yycopy[i] );
+                                            free( yycopy );
+                                            BEGIN(INITIAL);
+                                        }
+                                        else return STRING;                                         
                                     };
-                                            
                                 }
-<is_env>[\}]                    {BEGIN(INITIAL);}
+<is_env>[\}]                    {
+                                    if(isStringCond){
+                                        BEGIN(string_condition);
+                                    }
+                                    else{
+                                        BEGIN(INITIAL);
+                                    }
+                                }
 
 [ ]		            { }
 bye                 { count++; return BYE;              }
@@ -81,10 +93,10 @@ pwd                 { count++; return PWD;              }
 setenv              { count++; return SETENV;           }
 unsetenv            { count++; return UNSETENV;         }        
 printenv            { count++; return PRINTENV;         }   
-
-{ENV}               {BEGIN(is_env);}
-"\n"		        { isStart = false; count = 0; return END;   }
-[\"]                { BEGIN(string_condition); }
+\}                  { yylval.string = "";               }
+{ENV}               { BEGIN(is_env);                    }
+"\n"		        { isStringCond = false; isStart = false; count = 0; return END;   }
+[\"]                { isStringCond = true; BEGIN(string_condition); }
 {CHAR}+             {
                         if(ifAlias(yytext) && count == 0 && !isStart) {
                             printf("yytext: %s\n", yytext);
