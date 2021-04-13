@@ -23,6 +23,7 @@ struct aTable aliasTable;
 
 int aliasIndex, varIndex;
 
-bool isStart; 
+bool isStart;
+int count;
 
 char* subAliases(char* name);

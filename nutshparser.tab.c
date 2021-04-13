@@ -1783,32 +1783,40 @@ int homeCD() {											// function to change directory to /home/user
 		return 1;
 	}
 }
-// a b
-// b a
-int runSetAlias(char *name, char *word) {
-	// printf("NAME: %s WORD: %s\n", name, word);
-	// int p = strcmp(name, word);
-	// printf("OUT: %d\n", name, word);
 
+bool checkAlias (char *name, char *word){
+	if(strcmp(name, word) == 0){
+		return false;
+	}
+	for (int i = 0; i < aliasIndex; i++) {
+		if((strcmp(word, aliasTable.name[i]) == 0)){
+			return checkAlias(name, aliasTable.word[i]);
+		}
+	}
+	return true;
+}
+
+int runSetAlias(char *name, char *word) {
 	if(strcmp(name, word) == 0){
 			printf("Error, expansion of \"%s\" would create a loop.\n", name);
 			return 1;
 	}
+
+	if(!checkAlias(name, word)){
+		printf("Error, expansion of \"%s\" would create a loop.\n", name);
+		return 1;
+	}
+
 	for (int i = 0; i < aliasIndex; i++) {
-	
-		if((strcmp(aliasTable.name[i], name) == 0) || (strcmp(aliasTable.word[i], word) == 0) || (strcmp(aliasTable.name[i], word) == 0)){
-			printf("Error, expansion of \"%s\" would create a loop.\n", name);
-			return 1;
-		}
-		else if(strcmp(aliasTable.name[i], name) == 0) {
+		if(strcmp(aliasTable.name[i], name) == 0) {
 			strcpy(aliasTable.word[i], word);
 			return 1;
 		}
 	}
+
 	strcpy(aliasTable.name[aliasIndex], name);
 	strcpy(aliasTable.word[aliasIndex], word);
 	aliasIndex++;
-
 	return 1;
 }
 
@@ -1839,7 +1847,7 @@ int removeAlias(char *name){
 int listAlias(){
 	for (int i = 0; i < aliasIndex; i++) {
 		printf(aliasTable.name[i]);
-		printf(": ");
+		printf("=");
 		printf(aliasTable.word[i]);
 		printf("\n");
 	}
@@ -1862,6 +1870,7 @@ int printEnv(){
 	for(int i = 0; i < varIndex; i++){
 		printf("%s=%s\n", varTable.var[i], varTable.word[i]);
 	}
+	printf("VARINDEX: %d\n", varIndex);
 }
 
 int unsetEnv(char *variable){
@@ -1875,7 +1884,11 @@ int unsetEnv(char *variable){
 			return 1;
 		}
 		else if(strcmp(varTable.var[i], variable) == 0){
-			strcpy(varTable.word[i], "");
+			for(int j  = i; j < varIndex; j++){
+				strcpy(varTable.word[j],varTable.word[j+1]);
+				strcpy(varTable.var[j],varTable.var[j+1]);
+			}
+			varIndex--;
 			return 1;
 		}
 	}

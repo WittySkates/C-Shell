@@ -844,7 +844,7 @@ case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
 #line 48 "nutshscanner.l"
-{ isStart = false; return END;   }
+{ isStart = false; count = 0; return END;   }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
@@ -854,7 +854,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 50 "nutshscanner.l"
-{if(ifAlias(yytext) && !isStart) {
+{if(ifAlias(yytext) && count == 1 && !isStart) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );
@@ -862,6 +862,7 @@ YY_RULE_SETUP
                                 unput( yycopy[i] );
                             free( yycopy );
                     } else {
+                        count++;
                         printf("yytext: %s\n", yytext);
                         yylval.string = strdup(yytext);
                         return STRING;
@@ -870,10 +871,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 63 "nutshscanner.l"
+#line 64 "nutshscanner.l"
 ECHO;
 	YY_BREAK
-#line 877 "lex.yy.c"
+#line 878 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(string_condition):
 	yyterminate();
@@ -1879,5 +1880,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 63 "nutshscanner.l"
+#line 64 "nutshscanner.l"
 

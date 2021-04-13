@@ -45,9 +45,9 @@ setenv              { return SETENV;}
 unsetenv            { return UNSETENV;}
 printenv            { return PRINTENV;}   
 
-"\n"		        { isStart = false; return END;   }
+"\n"		        { isStart = false; count = 0; return END;   }
 [\"]                { BEGIN(string_condition); }
-{CHAR}+             {if(ifAlias(yytext) && !isStart) {
+{CHAR}+             {if(ifAlias(yytext) && count == 1 && !isStart) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );
@@ -55,6 +55,7 @@ printenv            { return PRINTENV;}
                                 unput( yycopy[i] );
                             free( yycopy );
                     } else {
+                        count++;
                         printf("yytext: %s\n", yytext);
                         yylval.string = strdup(yytext);
                         return STRING;

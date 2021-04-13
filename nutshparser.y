@@ -177,26 +177,39 @@ int homeCD() {											// function to change directory to /home/user
 	}
 }
 
+bool checkAlias (char *name, char *word){
+	if(strcmp(name, word) == 0){
+		return false;
+	}
+	for (int i = 0; i < aliasIndex; i++) {
+		if((strcmp(word, aliasTable.name[i]) == 0)){
+			return checkAlias(name, aliasTable.word[i]);
+		}
+	}
+	return true;
+}
+
 int runSetAlias(char *name, char *word) {
 	if(strcmp(name, word) == 0){
 			printf("Error, expansion of \"%s\" would create a loop.\n", name);
 			return 1;
 	}
+
+	if(!checkAlias(name, word)){
+		printf("Error, expansion of \"%s\" would create a loop.\n", name);
+		return 1;
+	}
+
 	for (int i = 0; i < aliasIndex; i++) {
-	
-		if((strcmp(aliasTable.name[i], name) == 0) || (strcmp(aliasTable.word[i], word) == 0) || (strcmp(aliasTable.name[i], word) == 0)){
-			printf("Error, expansion of \"%s\" would create a loop.\n", name);
-			return 1;
-		}
-		else if(strcmp(aliasTable.name[i], name) == 0) {
+		if(strcmp(aliasTable.name[i], name) == 0) {
 			strcpy(aliasTable.word[i], word);
 			return 1;
 		}
 	}
+
 	strcpy(aliasTable.name[aliasIndex], name);
 	strcpy(aliasTable.word[aliasIndex], word);
 	aliasIndex++;
-
 	return 1;
 }
 
@@ -250,6 +263,7 @@ int printEnv(){
 	for(int i = 0; i < varIndex; i++){
 		printf("%s=%s\n", varTable.var[i], varTable.word[i]);
 	}
+	printf("VARINDEX: %d\n", varIndex);
 }
 
 int unsetEnv(char *variable){
@@ -263,7 +277,11 @@ int unsetEnv(char *variable){
 			return 1;
 		}
 		else if(strcmp(varTable.var[i], variable) == 0){
-			strcpy(varTable.word[i], "");
+			for(int j  = i; j < varIndex; j++){
+				strcpy(varTable.word[j],varTable.word[j+1]);
+				strcpy(varTable.var[j],varTable.var[j+1]);
+			}
+			varIndex--;
 			return 1;
 		}
 	}
