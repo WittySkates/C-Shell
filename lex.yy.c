@@ -803,12 +803,12 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 39 "nutshscanner.l"
-{ return BYE;   }
+{ count++; return BYE;   }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 40 "nutshscanner.l"
-{ return CD;    }
+{ count++; return CD;    }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
@@ -823,22 +823,22 @@ YY_RULE_SETUP
 case 8:
 YY_RULE_SETUP
 #line 43 "nutshscanner.l"
-{ return PWD;   }
+{ count++; return PWD;   }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 44 "nutshscanner.l"
-{ return SETENV;}
+{ count++; return SETENV;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 45 "nutshscanner.l"
-{ return UNSETENV;}
+{ count++; return UNSETENV;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 46 "nutshscanner.l"
-{ return PRINTENV;}   
+{ count++; return PRINTENV;}   
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
@@ -854,7 +854,7 @@ YY_RULE_SETUP
 case 14:
 YY_RULE_SETUP
 #line 50 "nutshscanner.l"
-{if(ifAlias(yytext) && count == 1 && !isStart) {
+{if(ifAlias(yytext) && count == 0 && !isStart) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );

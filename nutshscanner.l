@@ -36,18 +36,18 @@ ANYCHAR         [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ 
 
 
 [ ]		            { }
-bye                 { return BYE;   }
-cd		            { return CD;    }
+bye                 { count++; return BYE;   }
+cd		            { count++; return CD;    }
 alias		        { isStart = true; return ALIAS; }
 unalias             { isStart = true; return UNALIAS;}
-pwd                 { return PWD;   }
-setenv              { return SETENV;}
-unsetenv            { return UNSETENV;}
-printenv            { return PRINTENV;}   
+pwd                 { count++; return PWD;   }
+setenv              { count++; return SETENV;}
+unsetenv            { count++; return UNSETENV;}
+printenv            { count++; return PRINTENV;}   
 
 "\n"		        { isStart = false; count = 0; return END;   }
 [\"]                { BEGIN(string_condition); }
-{CHAR}+             {if(ifAlias(yytext) && count == 1 && !isStart) {
+{CHAR}+             {if(ifAlias(yytext) && count == 0 && !isStart) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );
