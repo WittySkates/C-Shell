@@ -1756,6 +1756,7 @@ int runCD(char* arg) {
 			getcwd(cwd, sizeof(cwd));
 			strcpy(varTable.word[0], cwd);
 			printf("Directory not found\n");
+			printf("Directory: %s\n", arg);
 			return 1;
 		}
 	}
@@ -1766,7 +1767,7 @@ int runCD(char* arg) {
 		}
 		else {
 			printf("Directory not found\n");
-                       	return 1;
+			return 1;
 		}
 	}
 }
