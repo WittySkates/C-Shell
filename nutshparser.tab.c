@@ -1727,18 +1727,31 @@ int execute(char *cmd, char *args) {
 
 	char* cpath = malloc(sizeof(varTable.word[3]));
 	strcpy(cpath, varTable.word[3]);
+
+	int path_amount = 1;
+	for (int i = 0; i < strlen(cpath); i++) {
+		if(cpath[i] == ':'){
+			path_amount++;
+		}
+	}
 	char* path = strtok(cpath, ":");
 
+	int path_c = 1;
 	while(path != NULL){
-
+		
 		char* temp = concat(path, "/");
 		char* command = concat(temp, cmd);
 
 		if ((pid = fork()) == -1)
 			perror("fork error\n");
 		else if (pid == 0) {
-			execv(command, paramList);
-			//printf("Return not expected. Must be an execv error.n\n");
+			if(access(command, F_OK) == 0){
+				execv(command, paramList);
+				printf("Return not expected. Must be an execv error.n\n");
+			}
+			else if(path_c == path_amount){
+				printf("Command \'%s\' not found.\n", cmd);
+			}
 			exit(0);
 		}
 		else {
@@ -1747,6 +1760,7 @@ int execute(char *cmd, char *args) {
 				printf("\n");
 			}
 		}
+		path_c++;
 		path = strtok(NULL, ":");
 	}
 }
