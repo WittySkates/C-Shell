@@ -89,65 +89,111 @@ char* concatArgs(const char *s1, const char *s2)
 // Trying to make a catch all for all non built in commands
 int execute(char *cmd, char *args) {
 	pid_t pid;
+	char result1[4096];
 
-	int arg_amount = 2;
+	char* wholeLine = malloc(sizeof(cmd) + sizeof(args) + 2);
+	strcpy(wholeLine, cmd);
+	strcat(wholeLine, " ");
+	strcat(wholeLine, args);
+	int pipe_amount = 1;
 	for (int i = 0; i < strlen(args); i++) {
-		if(args[i] == ' '){
-			arg_amount++;
+		if(args[i] == '|'){
+			pipe_amount++;
 		}
 	}
 
-	char* paramList[arg_amount];
-	paramList[0] = cmd;
+	char* pipeList[pipe_amount];
 
-	char* arg = strtok(args, " ");
-	int i = 1;
-	while(arg != NULL){
-		paramList[i] = arg;
-		i++;
-		arg = strtok(NULL, " ");
+	char* splitPipes = strtok(wholeLine, "|");
+	int j = 0;
+	while (splitPipes != NULL){
+		pipeList[j] = splitPipes;
+		printf("%s\n", pipeList[j]);
+		j++;
+		splitPipes = strtok(NULL, "|");
 	}
 
-	paramList[i] = NULL;
-
-	char* cpath = malloc(sizeof(varTable.word[3]));
-	strcpy(cpath, varTable.word[3]);
-
-	int path_amount = 1;
-	for (int i = 0; i < strlen(cpath); i++) {
-		if(cpath[i] == ':'){
-			path_amount++;
+// pipeList[] is now a list of all the commands to be executed, seperated by pipes
+//	pid_t pid2;
+	int inc = 0;
+	for(inc; inc < pipe_amount; inc++){	
+		int link[2];
+		if(pipe(link) == -1){
+			printf(stderr, "fork");
 		}
-	}
-	char* path = strtok(cpath, ":");
-
-	int path_c = 1;
-	while(path != NULL){
-		
-		char* temp = concat(path, "/");
-		char* command = concat(temp, cmd);
-
-		if ((pid = fork()) == -1)
-			perror("fork error\n");
-		else if (pid == 0) {
-			if(access(command, F_OK) == 0){
-				execv(command, paramList);
-				printf("Return not expected. Must be an execv error.n\n");
+		if((pid = fork()) == -1){
+			printf(stderr, "die");
+		}
+		// child
+		if(pid == 0){ 
+			printf("%i = %s\n", inc, pipeList[inc]);
+			dup2(link[1], STDOUT_FILENO);
+			close(link[0]);
+			close(link[1]);
+			int arg_amount = 2;
+			for (int i = 0; i < strlen(pipeList[inc]); i++) {
+				if(pipeList[i] == ' '){
+					arg_amount++;
+				}
 			}
-			else if(path_c == path_amount){
-				printf("Command \'%s\' not found.\n", cmd);
+
+			char* paramList[arg_amount]; // 
+			int i;
+			if(inc == pipe_amount){
+				paramList[0] = cmd;
+				i = 1;
 			}
-			exit(0);
+			else{
+				i = 0;
+			}
+			char* arg = strtok(pipeList[i], " ");
+			while(arg != NULL){
+				paramList[i] = arg;
+				printf("%s\n", paramList[i]);
+				i++;
+				arg = strtok(NULL, " ");
+			}
+
+			//strcat(paramList, result1);
+
+			paramList[i] = NULL;
+
+			char* cpath = malloc(sizeof(varTable.word[3]));
+			strcpy(cpath, varTable.word[3]);
+			char* path = strtok(cpath, ":");
+
+			while(path != NULL){
+
+				char* temp = concat(path, "/");
+				char* command = concat(temp, paramList[0]);
+
+				if ((pid = fork()) == -1)
+					perror("fork error\n");
+				else if (pid == 0) {		
+					execv(command, paramList);
+					//printf("Return not expected. Must be an execv error.n\n");
+					exit(0);
+				}
+				else {
+					wait();
+					if(strcmp(paramList[0], "cat")==0){
+						printf("\n");
+					}
+				}
+				path = strtok(NULL, ":");
+			}
 		}
-		else {
+		else{
+			close(link[1]);
+			int nbytes = read(link[0], result1, sizeof(result1));
+			printf("%s\n", result1);
+			close(link[0]);
 			wait();
-			if(strcmp(cmd, "cat")==0){
-				printf("\n");
-			}
+
 		}
-		path_c++;
-		path = strtok(NULL, ":");
 	}
+
+/////////////////////////////////////////////////////////////////////////////
 }
 
 int runPWD() {
