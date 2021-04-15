@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <sys/wait.h>
 #include "global.h"
 
 int yylex(void);
@@ -27,6 +28,9 @@ char* concatArgs(const char *s1, const char *s2);
 int setEnv(char *variable, char *word);
 int printEnv();
 int unsetEnv(char *variable);
+int runPWD();
+int execute(char *cmd);
+int removeAlias(char *name);
 %}
 
 %union {char *string;}
@@ -280,7 +284,7 @@ int runSetAlias(char *name, char *word) {
 
 int removeAlias(char *name){
 	int isFound = 0;
-	char *aliasName[128];
+	char aliasName[128];
 	strcpy(aliasName, name);
 	for (int i = 0; i < aliasIndex; i++) {
 		if(strcmp(aliasTable.name[i], name) == 0){
@@ -304,10 +308,7 @@ int removeAlias(char *name){
 
 int listAlias(){
 	for (int i = 0; i < aliasIndex; i++) {
-		printf(aliasTable.name[i]);
-		printf("=");
-		printf(aliasTable.word[i]);
-		printf("\n");
+		printf("%s=%s\n", aliasTable.name[i], aliasTable.word[i]);
 	}
 }
 

@@ -78,6 +78,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <sys/wait.h>
 #include "global.h"
 
 int yylex(void);
@@ -96,8 +97,11 @@ char* concatArgs(const char *s1, const char *s2);
 int setEnv(char *variable, char *word);
 int printEnv();
 int unsetEnv(char *variable);
+int runPWD();
+int execute(char *cmd);
+int removeAlias(char *name);
 
-#line 101 "nutshparser.tab.c"
+#line 105 "nutshparser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -162,10 +166,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 32 "nutshparser.y"
+#line 36 "nutshparser.y"
 char *string;
 
-#line 169 "nutshparser.tab.c"
+#line 173 "nutshparser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -541,8 +545,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    40,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    54,    55,    59,    60
+       0,    44,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    58,    59,    63,    64
 };
 #endif
 
@@ -1346,97 +1350,97 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 40 "nutshparser.y"
+#line 44 "nutshparser.y"
                                                                 {exit(1); return 1; }
-#line 1352 "nutshparser.tab.c"
+#line 1356 "nutshparser.tab.c"
     break;
 
   case 3:
-#line 41 "nutshparser.y"
+#line 45 "nutshparser.y"
                                                         {runCD((yyvsp[-1].string)); return 1;}
-#line 1358 "nutshparser.tab.c"
+#line 1362 "nutshparser.tab.c"
     break;
 
   case 4:
-#line 42 "nutshparser.y"
+#line 46 "nutshparser.y"
                                                                 {homeCD(); return 1;}
-#line 1364 "nutshparser.tab.c"
+#line 1368 "nutshparser.tab.c"
     break;
 
   case 5:
-#line 43 "nutshparser.y"
+#line 47 "nutshparser.y"
                                                 {runSetAlias((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1370 "nutshparser.tab.c"
+#line 1374 "nutshparser.tab.c"
     break;
 
   case 6:
-#line 44 "nutshparser.y"
+#line 48 "nutshparser.y"
                                                                 {listAlias(); return 1;}
-#line 1376 "nutshparser.tab.c"
+#line 1380 "nutshparser.tab.c"
     break;
 
   case 7:
-#line 45 "nutshparser.y"
+#line 49 "nutshparser.y"
                                                 {removeAlias((yyvsp[-1].string)); return 1;}
-#line 1382 "nutshparser.tab.c"
+#line 1386 "nutshparser.tab.c"
     break;
 
   case 8:
-#line 46 "nutshparser.y"
+#line 50 "nutshparser.y"
                                                                 {runPWD(); return 1;}
-#line 1388 "nutshparser.tab.c"
+#line 1392 "nutshparser.tab.c"
     break;
 
   case 9:
-#line 47 "nutshparser.y"
+#line 51 "nutshparser.y"
                                                                 {execute((yyvsp[-1].string)); return 1;}
-#line 1394 "nutshparser.tab.c"
+#line 1398 "nutshparser.tab.c"
     break;
 
   case 10:
-#line 48 "nutshparser.y"
+#line 52 "nutshparser.y"
                                                 {setEnv((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1400 "nutshparser.tab.c"
+#line 1404 "nutshparser.tab.c"
     break;
 
   case 11:
-#line 49 "nutshparser.y"
+#line 53 "nutshparser.y"
                                                         {printEnv(); return 1;}
-#line 1406 "nutshparser.tab.c"
+#line 1410 "nutshparser.tab.c"
     break;
 
   case 12:
-#line 50 "nutshparser.y"
+#line 54 "nutshparser.y"
                                                 {unsetEnv((yyvsp[-1].string)); return 1;}
-#line 1412 "nutshparser.tab.c"
+#line 1416 "nutshparser.tab.c"
     break;
 
   case 13:
-#line 54 "nutshparser.y"
+#line 58 "nutshparser.y"
                                                                 {(yyval.string) = (yyvsp[0].string);}
-#line 1418 "nutshparser.tab.c"
+#line 1422 "nutshparser.tab.c"
     break;
 
   case 14:
-#line 55 "nutshparser.y"
+#line 59 "nutshparser.y"
                                                         {(yyval.string) = concatArgs((yyval.string), (yyvsp[0].string));}
-#line 1424 "nutshparser.tab.c"
+#line 1428 "nutshparser.tab.c"
     break;
 
   case 15:
-#line 59 "nutshparser.y"
+#line 63 "nutshparser.y"
                                                                 {(yyval.string) = (yyvsp[0].string);}
-#line 1430 "nutshparser.tab.c"
+#line 1434 "nutshparser.tab.c"
     break;
 
   case 16:
-#line 60 "nutshparser.y"
+#line 64 "nutshparser.y"
                                                         {(yyval.string) = concat((yyval.string), (yyvsp[0].string));}
-#line 1436 "nutshparser.tab.c"
+#line 1440 "nutshparser.tab.c"
     break;
 
 
-#line 1440 "nutshparser.tab.c"
+#line 1444 "nutshparser.tab.c"
 
       default: break;
     }
@@ -1668,7 +1672,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 62 "nutshparser.y"
+#line 66 "nutshparser.y"
 
 
 int yyerror(char *s) {
@@ -1890,7 +1894,7 @@ int runSetAlias(char *name, char *word) {
 
 int removeAlias(char *name){
 	int isFound = 0;
-	char *aliasName[128];
+	char aliasName[128];
 	strcpy(aliasName, name);
 	for (int i = 0; i < aliasIndex; i++) {
 		if(strcmp(aliasTable.name[i], name) == 0){
@@ -1914,10 +1918,7 @@ int removeAlias(char *name){
 
 int listAlias(){
 	for (int i = 0; i < aliasIndex; i++) {
-		printf(aliasTable.name[i]);
-		printf("=");
-		printf(aliasTable.word[i]);
-		printf("\n");
+		printf("%s=%s\n", aliasTable.name[i], aliasTable.word[i]);
 	}
 }
 
