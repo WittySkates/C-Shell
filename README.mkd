@@ -36,6 +36,7 @@ It is assumed that everything else was performed together.
 * working output (>)
 * working output append (>>)
 * working input
+* There cannot be a '\n' character in the inputed .txt file
 
 #### Pipes
 * Pipes with non-built-in commands
