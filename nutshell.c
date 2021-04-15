@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "global.h"
 #include <unistd.h>
+#include "global.h"
 
 char *getcwd(char *buf, size_t size);
 int yyparse();
@@ -17,6 +17,7 @@ int main()
     isStart = false;
     count = 0;
     isStringCond = false;
+    background = false;
 
     getcwd(cwd, sizeof(cwd));
 

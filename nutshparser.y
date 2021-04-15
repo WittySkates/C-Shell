@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <sys/wait.h>
 #include "global.h"
 
 int yylex(void);
@@ -27,6 +28,9 @@ char* concatArgs(const char *s1, const char *s2);
 int setEnv(char *variable, char *word);
 int printEnv();
 int unsetEnv(char *variable);
+int runPWD();
+int execute(char *cmd);
+int removeAlias(char *name);
 %}
 
 %union {char *string;}
@@ -44,8 +48,7 @@ cmd_line    :
 	| ALIAS END						{listAlias(); return 1;}
 	| UNALIAS STRING END			{removeAlias($2); return 1;}
 	| PWD END						{runPWD(); return 1;}
-	| STRING END					{execute($1, ""); return 1;}
-	| STRING ARGS END				{execute($1, $2); return 1;}
+	| ARGS END						{execute($1); return 1;}
 	| SETENV STRING SET END			{setEnv($2, $3); return 1;}
 	| PRINTENV END					{printEnv(); return 1;}
 	| UNSETENV STRING END			{unsetEnv($2); return 1;}
@@ -87,68 +90,123 @@ char* concatArgs(const char *s1, const char *s2)
 }
 
 // Trying to make a catch all for all non built in commands
-int execute(char *cmd, char *args) {
-	pid_t pid;
+int execute(char *cmd) {
+	pid_t pid, gpid;
+	int status;
+
 
 	int arg_amount = 2;
-	for (int i = 0; i < strlen(args); i++) {
-		if(args[i] == ' '){
+	int pipe_amount = 0;
+	for (int i = 0; i < strlen(cmd); i++) {
+		if(cmd[i] == ' '){
 			arg_amount++;
 		}
-	}
-
-	char* paramList[arg_amount];
-	paramList[0] = cmd;
-
-	char* arg = strtok(args, " ");
-	int i = 1;
-	while(arg != NULL){
-		paramList[i] = arg;
-		i++;
-		arg = strtok(NULL, " ");
-	}
-
-	paramList[i] = NULL;
-
-	char* cpath = malloc(sizeof(varTable.word[3]));
-	strcpy(cpath, varTable.word[3]);
-
-	int path_amount = 1;
-	for (int i = 0; i < strlen(cpath); i++) {
-		if(cpath[i] == ':'){
-			path_amount++;
+		if(cmd[i] == '|'){
+			pipe_amount++;
 		}
 	}
-	char* path = strtok(cpath, ":");
 
-	int path_c = 1;
-	while(path != NULL){
-		
-		char* temp = concat(path, "/");
-		char* command = concat(temp, cmd);
+	char* paramList[pipe_amount + 1][arg_amount];
+	char* token = strtok(cmd, " ");
 
-		if ((pid = fork()) == -1)
-			perror("fork error\n");
-		else if (pid == 0) {
-			if(access(command, F_OK) == 0){
-				execv(command, paramList);
-				printf("Return not expected. Must be an execv error.n\n");
-			}
-			else if(path_c == path_amount){
-				printf("Command \'%s\' not found.\n", cmd);
-			}
-			exit(0);
+	int i = 0;
+	int j = 0;
+	while(token != NULL){
+		if(strcmp(token, "|") == 0){
+			paramList[i][j] = NULL;
+			i++;
+			j = 0;
+			token = strtok(NULL, " ");
 		}
-		else {
-			wait();
-			if(strcmp(cmd, "cat")==0){
-				printf("\n");
+		paramList[i][j] = token;
+		//printf("I: %d J: %d T: %s\n", i,j,token);
+		j++;
+		token = strtok(NULL, " ");
+	}
+	paramList[i][j] = NULL;
+
+	int pipefds[2*pipe_amount];
+	for(int p = 0; p < (pipe_amount); p++){
+		if(pipe(pipefds + p*2) < 0) {
+			perror("couldn't pipe");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	int commandc = 0;
+	for(int k = 0; k < pipe_amount + 1; k++){
+		pid = fork();
+		if(pid == 0){
+			// Not first
+			if (k != 0){
+				if(dup2(pipefds[commandc-2], 0) < 0){
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
+			}
+			// Not last
+			if(k != pipe_amount){
+				if(dup2(pipefds[commandc+1], 1) < 0){
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
+			}
+
+			for(i = 0; i < 2*pipe_amount; i++){
+				close(pipefds[i]);
+			}
+
+			char* cpath = malloc(sizeof(varTable.word[3]));
+			strcpy(cpath, varTable.word[3]);
+
+			int path_amount = 1;
+			for (int i = 0; i < strlen(cpath); i++) {
+				if(cpath[i] == ':'){
+					path_amount++;
+				}
+			}
+
+			char* path = strtok(cpath, ":");
+			int path_c = 1;
+			while(path != NULL){
+
+				char* temp = concat(path, "/");
+				char* command = concat(temp, paramList[k][0]);
+				if(access(command, F_OK) == 0){
+					execv(command, paramList[k]);
+					printf("Return not expected. Must be an execv error.\n");
+				}
+				else if(path_c == path_amount){
+					printf("Command \'%s\' not found.\n", paramList[k][0]);
+					exit(0);
+				}
+				path_c++;
+				path = strtok(NULL, ":");
 			}
 		}
-		path_c++;
-		path = strtok(NULL, ":");
+		else if (pid < 0){
+			perror("eror");
+			exit(EXIT_FAILURE);
+		}
+		commandc+=2;
+	}
+	for(int i = 0; i < 2*pipe_amount; i++){
+		close(pipefds[i]);
+	}
+	if(!background){
+		//Leaves zombie process (alternate is to wait(&status) and increase amount to high number?)
+		// for(int i = 0; i < pipe_amount + 2; i++){
+		// 	waitpid(pid, &status, WUNTRACED);
+		// }
+		for(int i = 0; i < pipe_amount + 10; i++){
+			wait(&status);
+		}
+	}
+	else{
+		background = false;
 	}
 }
+
 
 int runPWD() {
 	getcwd(cwd, sizeof(cwd));
@@ -234,7 +292,7 @@ int runSetAlias(char *name, char *word) {
 
 int removeAlias(char *name){
 	int isFound = 0;
-	char *aliasName[128];
+	char aliasName[128];
 	strcpy(aliasName, name);
 	for (int i = 0; i < aliasIndex; i++) {
 		if(strcmp(aliasTable.name[i], name) == 0){
@@ -258,10 +316,7 @@ int removeAlias(char *name){
 
 int listAlias(){
 	for (int i = 0; i < aliasIndex; i++) {
-		printf(aliasTable.name[i]);
-		printf("=");
-		printf(aliasTable.word[i]);
-		printf("\n");
+		printf("%s=%s\n", aliasTable.name[i], aliasTable.word[i]);
 	}
 }
 
