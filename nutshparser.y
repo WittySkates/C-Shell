@@ -91,7 +91,7 @@ char* concatArgs(const char *s1, const char *s2)
 
 // Trying to make a catch all for all non built in commands
 int execute(char *cmd) {
-	pid_t pid;
+	pid_t pid, gpid;
 	int status;
 
 
@@ -194,12 +194,14 @@ int execute(char *cmd) {
 		close(pipefds[i]);
 	}
 	if(!background){
+		//Leaves zombie process (alternate is to wait(&status) and increase amount to high number?)
 		for(int i = 0; i < pipe_amount + 2; i++){
-			wait(&status);
+			waitpid(pid, &status, WUNTRACED);
 		}
 	}
-
-	background = false;
+	else{
+		background = false;
+	}
 }
 
 
