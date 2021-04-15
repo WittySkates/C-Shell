@@ -1,7 +1,7 @@
 # NUTSHELL PROJECT
 Creators: Jack Gonzales, Connor Dupuis
 
-## Team Workflow / work division
+## Team Workflow / Work Division
 We divided up the work pretty evenly this project. Every week we would have coding times where we would work together and pair program.
 This helped us figure out flaws in our code and helped to debug. This wokred really well for us. Below we have listed the items that we worked on individually, 
 most of the things not on these lists were done via paired programming together. Usually during this session of paired programming one of us would bring the start 
