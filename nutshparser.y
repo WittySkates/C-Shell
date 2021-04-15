@@ -136,7 +136,6 @@ int execute(char *cmd) {
 	int commandc = 0;
 	for(int k = 0; k < pipe_amount + 1; k++){
 		pid = fork();
-
 		if(pid == 0){
 			// Not first
 			if (k != 0){
@@ -194,9 +193,13 @@ int execute(char *cmd) {
 	for(int i = 0; i < 2*pipe_amount; i++){
 		close(pipefds[i]);
 	}
-	for(int i = 0; i < pipe_amount + 2; i++){
-		wait(&status);
+	if(!background){
+		for(int i = 0; i < pipe_amount + 2; i++){
+			wait(&status);
+		}
 	}
+
+	background = false;
 }
 
 

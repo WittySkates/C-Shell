@@ -23,6 +23,7 @@ struct aTable aliasTable;
 
 int aliasIndex, varIndex;
 
+bool background;
 bool isStart;
 bool isStringCond;
 int count;

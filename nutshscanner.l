@@ -87,6 +87,7 @@ setenv              { count++; return SETENV;           }
 unsetenv            { count++; return UNSETENV;         }        
 printenv            { count++; return PRINTENV;         }   
 \}                  { yylval.string = "";               }
+\&                  { background = true; yylval.string = "";}
 {ENV}               { yy_push_state(is_env);                    }
 "\n"		        { isStringCond = false; isStart = false; count = 0; return END;   }
 [\"]                { isStringCond = true; BEGIN(string_condition); }

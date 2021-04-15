@@ -17,6 +17,7 @@ int main()
     isStart = false;
     count = 0;
     isStringCond = false;
+    background = false;
 
     getcwd(cwd, sizeof(cwd));
 
