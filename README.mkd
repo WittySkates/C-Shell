@@ -59,6 +59,9 @@ It is assumed that everything else was performed together.
 #### Shell Robustness
 * Our shell did not crash once in the tests that we ran
 
+#### NOTE
+* commands like ./nutshell < test.txt have botched output... But the output is correct!!
+
 ## Tasks Not Completed
 #### Wildcard Matching
 * Did not implement
