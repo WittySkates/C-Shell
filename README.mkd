@@ -35,6 +35,7 @@ It is assumed that everything else was performed together.
 #### I/O
 * working output (>)
 * working output append (>>)
+* working input
 
 #### Pipes
 * Pipes with non-built-in commands
@@ -42,6 +43,8 @@ It is assumed that everything else was performed together.
 
 #### Pipes With IO
 * Pipes and Output work together
+* Pipes and input work together
+* Pipes and I/O work together
 
 #### Background Tasks
 * can run tasks in the background
@@ -56,9 +59,5 @@ It is assumed that everything else was performed together.
 * Our shell did not crash once in the tests that we ran
 
 ## Tasks Not Completed
-#### I/O
-* Currently no working input
-* Input and Output dont work with pipes because input doesnt work
-
 #### Wildcard Matching
 * Did not implement
