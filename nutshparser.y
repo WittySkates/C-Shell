@@ -88,6 +88,8 @@ char* concatArgs(const char *s1, const char *s2)
 // Trying to make a catch all for all non built in commands
 int execute(char *cmd) {
 	pid_t pid;
+	int status;
+
 
 	int arg_amount = 2;
 	int pipe_amount = 0;
@@ -100,57 +102,98 @@ int execute(char *cmd) {
 		}
 	}
 
-	char* paramList[arg_amount];
-
+	char* paramList[pipe_amount + 1][arg_amount];
 	char* token = strtok(cmd, " ");
+
 	int i = 0;
+	int j = 0;
 	while(token != NULL){
-		paramList[i] = token;
-		i++;
+		if(strcmp(token, "|") == 0){
+			paramList[i][j] = NULL;
+			i++;
+			j = 0;
+			token = strtok(NULL, " ");
+		}
+		paramList[i][j] = token;
+		j++;
 		token = strtok(NULL, " ");
 	}
+	paramList[i][j] = NULL;
 
-	paramList[i] = NULL;
-
-	char* cpath = malloc(sizeof(varTable.word[3]));
-	strcpy(cpath, varTable.word[3]);
-
-	int path_amount = 1;
-	for (int i = 0; i < strlen(cpath); i++) {
-		if(cpath[i] == ':'){
-			path_amount++;
+	int pipefds[2*pipe_amount];
+	for(int p = 0; p < (pipe_amount); p++){
+		if(pipe(pipefds + p*2) < 0) {
+			perror("couldn't pipe");
+			exit(EXIT_FAILURE);
 		}
 	}
-	char* path = strtok(cpath, ":");
 
-	int path_c = 1;
-	while(path != NULL){
-		
-		char* temp = concat(path, "/");
-		char* command = concat(temp, cmd);
+	int commandc = 0;
+	for(int k = 0; k < pipe_amount + 1; k++){
+		pid = fork();
 
-		if ((pid = fork()) == -1)
-			perror("fork error\n");
-		else if (pid == 0) {
-			if(access(command, F_OK) == 0){
-				execv(command, paramList);
-				printf("Return not expected. Must be an execv error.n\n");
+		if(pid == 0){
+			// Not first
+			if (k != 0){
+				if(dup2(pipefds[commandc-2], 0) < 0){
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
 			}
-			else if(path_c == path_amount){
-				printf("Command \'%s\' not found.\n", cmd);
+			// Not last
+			if(k != pipe_amount){
+				if(dup2(pipefds[commandc+1], 1) < 0){
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
 			}
-			exit(0);
+
+			for(i = 0; i < 2*pipe_amount; i++){
+				close(pipefds[i]);
+			}
+
+			char* cpath = malloc(sizeof(varTable.word[3]));
+			strcpy(cpath, varTable.word[3]);
+
+			int path_amount = 1;
+			for (int i = 0; i < strlen(cpath); i++) {
+				if(cpath[i] == ':'){
+					path_amount++;
+				}
+			}
+
+			char* path = strtok(cpath, ":");
+			int path_c = 1;
+			while(path != NULL){
+				
+				char* temp = concat(path, "/");
+				char* command = concat(temp, paramList[k][0]);
+				if(access(command, F_OK) == 0){
+					execv(command, paramList[k]);
+					printf("Return not expected. Must be an execv error.n\n");
+				}
+				else if(path_c == path_amount){
+					printf("Command \'%s\' not found.\n", cmd);
+				}
+				path_c++;
+				path = strtok(NULL, ":");
+			}
+
 		}
-		else {
-			wait();
-			if(strcmp(cmd, "cat")==0){
-				printf("\n");
-			}
+		else if (pid < 0){
+			perror("eror");
+			exit(EXIT_FAILURE);
 		}
-		path_c++;
-		path = strtok(NULL, ":");
+		commandc+=2;
+	}
+	for(int i = 0; i < 2*pipe_amount; i++){
+		close(pipefds[i]);
+	}
+	for(int i = 0; i < pipe_amount + 2; i++){
+		wait(&status);
 	}
 }
+
 
 int runPWD() {
 	getcwd(cwd, sizeof(cwd));
