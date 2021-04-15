@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include "global.h"
 
 int yylex(void);
@@ -96,29 +97,51 @@ int execute(char *cmd) {
 	int status;
 	//printf("cmd: %s\n", cmd);
 	int arg_amount = 2;
+	int seperator_amount = 0;
 	int pipe_amount = 0;
+	bool output_present = false;
 	for (int i = 0; i < strlen(cmd); i++) {
 		if(cmd[i] == ' '){
 			arg_amount++;
 		}
 		if(cmd[i] == '|'){
 			pipe_amount++;
+			seperator_amount++;
+		}
+		if(cmd[i] == '>'){
+			seperator_amount++;
+			output_present = true;
 		}
 	}
 
-	char* paramList[pipe_amount + 1][arg_amount];
+	char* paramList[seperator_amount + 1][arg_amount];
 	char* token = strtok(cmd, " ");
 
 	int i = 0;
 	int j = 0;
+	int ofd;
+	int out_carrot = 0;
 	while(token != NULL){
-		if(strcmp(token, "|") == 0){
+		if((strcmp(token, "|") == 0) || strcmp(token, ">") == 0 || strcmp(token, ">>") == 0){
 			paramList[i][j] = NULL;
+			if(strcmp(token, ">") == 0){
+				out_carrot++;
+			}
+			if(strcmp(token, ">>") == 0){
+				out_carrot++;
+				out_carrot++;
+			}
 			i++;
 			j = 0;
 			token = strtok(NULL, " ");
 		}
 		paramList[i][j] = token;
+		if(out_carrot == 1){
+			ofd = creat(token, 0644);
+		}
+		if(out_carrot == 2){
+			ofd = open(token, O_APPEND | O_CREAT | O_RDWR);
+		}
 		//printf("I: %d J: %d T: %s\n", i,j,token);
 		j++;
 		token = strtok(NULL, " ");
@@ -137,6 +160,13 @@ int execute(char *cmd) {
 	for(int k = 0; k < pipe_amount + 1; k++){
 		pid = fork();
 		if(pid == 0){
+			// is last
+			if(k == pipe_amount && out_carrot > 0){
+				if(dup2(ofd, 1) < 0){
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
+			}
 			// Not first
 			if (k != 0){
 				if(dup2(pipefds[commandc-2], 0) < 0){
@@ -151,11 +181,12 @@ int execute(char *cmd) {
 					exit(EXIT_FAILURE);
 				}
 			}
-
 			for(i = 0; i < 2*pipe_amount; i++){
 				close(pipefds[i]);
 			}
-
+			if(out_carrot > 0){
+				close(ofd);
+			}
 			char* cpath = malloc(sizeof(varTable.word[3]));
 			strcpy(cpath, varTable.word[3]);
 
@@ -165,23 +196,22 @@ int execute(char *cmd) {
 					path_amount++;
 				}
 			}
-
 			char* path = strtok(cpath, ":");
 			int path_c = 1;
 			while(path != NULL){
-
 				char* temp = concat(path, "/");
 				char* command = concat(temp, paramList[k][0]);
+				//printf("%s\n", command);
 				if(access(command, F_OK) == 0){
 					execv(command, paramList[k]);
 					printf("Return not expected. Must be an execv error.\n");
 				}
 				else if(path_c == path_amount){
 					printf("Command \'%s\' not found.\n", paramList[k][0]);
-					exit(0);
 				}
 				path_c++;
 				path = strtok(NULL, ":");
+				//printf("%s\n", paramList[k][0]);
 			}
 		}
 		else if (pid < 0){
@@ -189,10 +219,12 @@ int execute(char *cmd) {
 			exit(EXIT_FAILURE);
 		}
 		commandc+=2;
+
 	}
 	for(int i = 0; i < 2*pipe_amount; i++){
 		close(pipefds[i]);
 	}
+	//close(ofd);
 	if(!background){
 		//Leaves zombie process (alternate is to wait(&status) and increase amount to high number?)
 		// for(int i = 0; i < pipe_amount + 2; i++){

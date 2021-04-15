@@ -1,0 +1,16 @@
+./ls
+/bin/ls
+made it
+global.h
+g.txt
+lex.yy.c
+Makefile
+nutshell
+nutshell.c
+nutshparser.tab.c
+nutshparser.tab.h
+nutshparser.y
+nutshscanner.l
+sample.txt
+test
+testdir

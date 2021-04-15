@@ -1,0 +1,64 @@
+# NUTSHELL PROJECT
+Creators: Jack Gonzales, Connor Dupuis
+
+## Team Workflow / work division
+We divided up the work pretty evenly this project. Every week we would have coding times where we would work together and pair program.
+This helped us figure out flaws in our code and helped to debug. This wokred really well for us. Below we have listed the items that we worked on individually, 
+most of the things not on these lists were done via paired programming together. Usually during this session of paired programming one of us would bring the start 
+of the function. We would say that ~70% of the coding that we did for this project was done when we were together working on the discord call.
+
+### Connors individual tasks
+* background tasks
+* file input
+
+### Jacks individual tasks
+* file output
+
+### Performed together
+It is assumed that everything else was performed together.
+
+## Tasks Accomplished
+#### Built-in Commands
+* setenv
+* printenv
+* unsetenv
+* cd
+* alias
+* unalias
+* print alias
+* bye
+
+#### Non-built-in commands
+* all commands w/o arguments
+* all commands with arguments
+
+#### I/O
+* working output (>)
+* working output append (>>)
+
+#### Pipes
+* Pipes with non-built-in commands
+* multiple pipes at once
+
+#### Pipes With IO
+* Pipes and Output work together
+
+#### Background Tasks
+* can run tasks in the background
+
+#### Enviromental Vairable Expansion
+* this is working
+
+#### Alias Expansion
+* this is working
+
+#### Shell Robustness
+* Our shell did not crash once in the tests that we ran
+
+## Tasks Not Completed
+#### I/O
+* Currently no working input
+* Input and Output dont work with pipes because input doesnt work
+
+#### Wildcard Matching
+* Did not implement
