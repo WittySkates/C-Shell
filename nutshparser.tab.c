@@ -79,6 +79,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include "global.h"
 
 int yylex(void);
@@ -102,7 +103,7 @@ int execute(char *cmd);
 int removeAlias(char *name);
 int byebye();
 
-#line 106 "nutshparser.tab.c"
+#line 107 "nutshparser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -167,10 +168,10 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 37 "nutshparser.y"
+#line 38 "nutshparser.y"
 char *string;
 
-#line 174 "nutshparser.tab.c"
+#line 175 "nutshparser.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -546,8 +547,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    45,    45,    46,    47,    48,    49,    50,    51,    52,
-      53,    54,    55,    59,    60,    64,    65
+       0,    46,    46,    47,    48,    49,    50,    51,    52,    53,
+      54,    55,    56,    60,    61,    65,    66
 };
 #endif
 
@@ -1351,97 +1352,97 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 45 "nutshparser.y"
+#line 46 "nutshparser.y"
                                                                 {byebye(); return 1; }
-#line 1357 "nutshparser.tab.c"
+#line 1358 "nutshparser.tab.c"
     break;
 
   case 3:
-#line 46 "nutshparser.y"
+#line 47 "nutshparser.y"
                                                         {runCD((yyvsp[-1].string)); return 1;}
-#line 1363 "nutshparser.tab.c"
+#line 1364 "nutshparser.tab.c"
     break;
 
   case 4:
-#line 47 "nutshparser.y"
+#line 48 "nutshparser.y"
                                                                 {homeCD(); return 1;}
-#line 1369 "nutshparser.tab.c"
+#line 1370 "nutshparser.tab.c"
     break;
 
   case 5:
-#line 48 "nutshparser.y"
+#line 49 "nutshparser.y"
                                                 {runSetAlias((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1375 "nutshparser.tab.c"
+#line 1376 "nutshparser.tab.c"
     break;
 
   case 6:
-#line 49 "nutshparser.y"
+#line 50 "nutshparser.y"
                                                                 {listAlias(); return 1;}
-#line 1381 "nutshparser.tab.c"
+#line 1382 "nutshparser.tab.c"
     break;
 
   case 7:
-#line 50 "nutshparser.y"
+#line 51 "nutshparser.y"
                                                 {removeAlias((yyvsp[-1].string)); return 1;}
-#line 1387 "nutshparser.tab.c"
+#line 1388 "nutshparser.tab.c"
     break;
 
   case 8:
-#line 51 "nutshparser.y"
+#line 52 "nutshparser.y"
                                                                 {runPWD(); return 1;}
-#line 1393 "nutshparser.tab.c"
+#line 1394 "nutshparser.tab.c"
     break;
 
   case 9:
-#line 52 "nutshparser.y"
+#line 53 "nutshparser.y"
                                                                 {execute((yyvsp[-1].string)); return 1;}
-#line 1399 "nutshparser.tab.c"
+#line 1400 "nutshparser.tab.c"
     break;
 
   case 10:
-#line 53 "nutshparser.y"
+#line 54 "nutshparser.y"
                                                 {setEnv((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
-#line 1405 "nutshparser.tab.c"
+#line 1406 "nutshparser.tab.c"
     break;
 
   case 11:
-#line 54 "nutshparser.y"
+#line 55 "nutshparser.y"
                                                         {printEnv(); return 1;}
-#line 1411 "nutshparser.tab.c"
+#line 1412 "nutshparser.tab.c"
     break;
 
   case 12:
-#line 55 "nutshparser.y"
+#line 56 "nutshparser.y"
                                                 {unsetEnv((yyvsp[-1].string)); return 1;}
-#line 1417 "nutshparser.tab.c"
+#line 1418 "nutshparser.tab.c"
     break;
 
   case 13:
-#line 59 "nutshparser.y"
+#line 60 "nutshparser.y"
                                                                 {(yyval.string) = (yyvsp[0].string);}
-#line 1423 "nutshparser.tab.c"
+#line 1424 "nutshparser.tab.c"
     break;
 
   case 14:
-#line 60 "nutshparser.y"
+#line 61 "nutshparser.y"
                                                         {(yyval.string) = concatArgs((yyval.string), (yyvsp[0].string));}
-#line 1429 "nutshparser.tab.c"
+#line 1430 "nutshparser.tab.c"
     break;
 
   case 15:
-#line 64 "nutshparser.y"
+#line 65 "nutshparser.y"
                                                                 {(yyval.string) = (yyvsp[0].string);}
-#line 1435 "nutshparser.tab.c"
+#line 1436 "nutshparser.tab.c"
     break;
 
   case 16:
-#line 65 "nutshparser.y"
+#line 66 "nutshparser.y"
                                                         {(yyval.string) = concat((yyval.string), (yyvsp[0].string));}
-#line 1441 "nutshparser.tab.c"
+#line 1442 "nutshparser.tab.c"
     break;
 
 
-#line 1445 "nutshparser.tab.c"
+#line 1446 "nutshparser.tab.c"
 
       default: break;
     }
@@ -1673,7 +1674,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 67 "nutshparser.y"
+#line 68 "nutshparser.y"
 
 
 int yyerror(char *s) {
@@ -1706,29 +1707,44 @@ int execute(char *cmd) {
 	int status;
 	//printf("cmd: %s\n", cmd);
 	int arg_amount = 2;
+	int seperator_amount = 0;
 	int pipe_amount = 0;
+	bool output_present = false;
 	for (int i = 0; i < strlen(cmd); i++) {
 		if(cmd[i] == ' '){
 			arg_amount++;
 		}
 		if(cmd[i] == '|'){
 			pipe_amount++;
+			seperator_amount++;
+		}
+		if(cmd[i] == '>'){
+			seperator_amount++;
+			output_present = true;
 		}
 	}
 
-	char* paramList[pipe_amount + 1][arg_amount];
+	char* paramList[seperator_amount + 1][arg_amount];
 	char* token = strtok(cmd, " ");
 
 	int i = 0;
 	int j = 0;
+	int ofd;
+	bool carrot_found = false;
 	while(token != NULL){
-		if(strcmp(token, "|") == 0){
+		if((strcmp(token, "|") == 0) || strcmp(token, ">") == 0){
 			paramList[i][j] = NULL;
+			if(strcmp(token, ">") == 0){
+				carrot_found = true;
+			}
 			i++;
 			j = 0;
 			token = strtok(NULL, " ");
 		}
 		paramList[i][j] = token;
+		if(carrot_found){
+			ofd = creat(token, 0644);
+		}
 		//printf("I: %d J: %d T: %s\n", i,j,token);
 		j++;
 		token = strtok(NULL, " ");
@@ -1747,6 +1763,13 @@ int execute(char *cmd) {
 	for(int k = 0; k < pipe_amount + 1; k++){
 		pid = fork();
 		if(pid == 0){
+			// is last
+			if(k == pipe_amount){
+				if(dup2(ofd, 1) < 0){
+					perror("dup2");
+					exit(EXIT_FAILURE);
+				}
+			}
 			// Not first
 			if (k != 0){
 				if(dup2(pipefds[commandc-2], 0) < 0){
@@ -1761,11 +1784,10 @@ int execute(char *cmd) {
 					exit(EXIT_FAILURE);
 				}
 			}
-
 			for(i = 0; i < 2*pipe_amount; i++){
 				close(pipefds[i]);
 			}
-
+			close(ofd);
 			char* cpath = malloc(sizeof(varTable.word[3]));
 			strcpy(cpath, varTable.word[3]);
 
@@ -1775,23 +1797,22 @@ int execute(char *cmd) {
 					path_amount++;
 				}
 			}
-
 			char* path = strtok(cpath, ":");
 			int path_c = 1;
 			while(path != NULL){
-
 				char* temp = concat(path, "/");
 				char* command = concat(temp, paramList[k][0]);
+				//printf("%s\n", command);
 				if(access(command, F_OK) == 0){
 					execv(command, paramList[k]);
 					printf("Return not expected. Must be an execv error.\n");
 				}
 				else if(path_c == path_amount){
 					printf("Command \'%s\' not found.\n", paramList[k][0]);
-					exit(0);
 				}
 				path_c++;
 				path = strtok(NULL, ":");
+				//printf("%s\n", paramList[k][0]);
 			}
 		}
 		else if (pid < 0){
@@ -1799,10 +1820,12 @@ int execute(char *cmd) {
 			exit(EXIT_FAILURE);
 		}
 		commandc+=2;
+
 	}
 	for(int i = 0; i < 2*pipe_amount; i++){
 		close(pipefds[i]);
 	}
+	//close(ofd);
 	if(!background){
 		//Leaves zombie process (alternate is to wait(&status) and increase amount to high number?)
 		// for(int i = 0; i < pipe_amount + 2; i++){
