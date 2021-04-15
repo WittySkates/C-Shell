@@ -62,3 +62,6 @@ It is assumed that everything else was performed together.
 ## Tasks Not Completed
 #### Wildcard Matching
 * Did not implement
+
+#### IO
+* Did not output to the error stream (2>>)
