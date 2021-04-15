@@ -115,6 +115,7 @@ int execute(char *cmd) {
 			token = strtok(NULL, " ");
 		}
 		paramList[i][j] = token;
+		//printf("I: %d J: %d T: %s\n", i,j,token);
 		j++;
 		token = strtok(NULL, " ");
 	}
@@ -165,7 +166,7 @@ int execute(char *cmd) {
 			char* path = strtok(cpath, ":");
 			int path_c = 1;
 			while(path != NULL){
-				
+
 				char* temp = concat(path, "/");
 				char* command = concat(temp, paramList[k][0]);
 				if(access(command, F_OK) == 0){
@@ -173,12 +174,12 @@ int execute(char *cmd) {
 					printf("Return not expected. Must be an execv error.n\n");
 				}
 				else if(path_c == path_amount){
-					printf("Command \'%s\' not found.\n", cmd);
+					printf("Command \'%s\' not found.\n", paramList[k][0]);
+					exit(0);
 				}
 				path_c++;
 				path = strtok(NULL, ":");
 			}
-
 		}
 		else if (pid < 0){
 			perror("eror");
