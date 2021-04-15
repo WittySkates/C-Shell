@@ -482,18 +482,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  24
+#define YYFINAL  22
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   34
+#define YYLAST   32
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  13
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  17
+#define YYNRULES  16
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  36
+#define YYNSTATES  34
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   267
@@ -542,7 +542,7 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int8 yyrline[] =
 {
        0,    40,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    55,    56,    60,    61
+      48,    49,    50,    54,    55,    59,    60
 };
 #endif
 
@@ -581,10 +581,10 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,    10,     5,     6,     7,     0,    13,    17,    15,    19,
-      25,    -4,    18,    -4,    -4,    -4,    11,    22,    -4,    20,
-      -4,    24,    -4,    23,    -4,    -4,    -4,    -4,    26,    -4,
-      -4,    12,    -4,    -4,    -4,    -4
+      -3,     9,     5,    -4,     6,     0,    10,    15,    13,    17,
+      23,     7,    -4,    16,    -4,    20,    -4,    18,    -4,    22,
+      -4,    21,    -4,    -4,    -4,    -4,    24,    -4,    -4,    11,
+      -4,    -4,    -4,    -4
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -592,10 +592,10 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     2,     0,     4,    14,     9,     0,     0,     6,     0,
-       8,     0,    12,     0,     1,     3,    15,    10,     0,     7,
-      16,     0,    13,     5,    17,    11
+       0,     0,     0,    13,     0,     0,     0,     0,     0,     0,
+       0,     0,     2,     0,     4,     0,     6,     0,     8,     0,
+      11,     0,     1,    14,     9,     3,     0,     7,    15,     0,
+      12,     5,    16,    10
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -607,7 +607,7 @@ static const yytype_int8 yypgoto[] =
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,    10,    16,    31
+      -1,    10,    11,    29
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -615,18 +615,18 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,     3,     4,     5,    19,     6,     7,     8,     9,
-      12,    14,    17,    13,    15,    18,    26,    34,    11,    27,
-      35,    20,    21,    22,    23,    24,    25,    28,    29,    30,
-       0,    32,     0,     0,    33
+       1,     2,     3,     4,     5,    17,     6,     7,     8,     9,
+      13,    15,    23,    14,    16,    24,    32,    12,    18,    33,
+      19,    20,    21,    22,    25,    26,    27,    28,     0,    30,
+       0,     0,    31
 };
 
 static const yytype_int8 yycheck[] =
 {
        3,     4,     5,     6,     7,     5,     9,    10,    11,    12,
-       5,     5,     5,     8,     8,     8,     5,     5,     8,     8,
-       8,     8,     5,     8,     5,     0,     8,     5,     8,     5,
-      -1,     8,    -1,    -1,     8
+       5,     5,     5,     8,     8,     8,     5,     8,     8,     8,
+       5,     8,     5,     0,     8,     5,     8,     5,    -1,     8,
+      -1,    -1,     8
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -634,23 +634,23 @@ static const yytype_int8 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,     3,     4,     5,     6,     7,     9,    10,    11,    12,
-      14,     8,     5,     8,     5,     8,    15,     5,     8,     5,
-       8,     5,     8,     5,     0,     8,     5,     8,     5,     8,
-       5,    16,     8,     8,     5,     8
+      14,    15,     8,     5,     8,     5,     8,     5,     8,     5,
+       8,     5,     0,     5,     8,     8,     5,     8,     5,    16,
+       8,     8,     5,     8
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    13,    14,    14,    14,    14,    14,    14,    14,    14,
-      14,    14,    14,    14,    15,    15,    16,    16
+      14,    14,    14,    15,    15,    16,    16
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     3,     2,     4,     2,     3,     2,     2,
-       3,     4,     2,     3,     1,     2,     1,     2
+       4,     2,     3,     1,     2,     1,     2
 };
 
 
@@ -1389,60 +1389,54 @@ yyreduce:
 
   case 9:
 #line 47 "nutshparser.y"
-                                                        {execute((yyvsp[-1].string), ""); return 1;}
+                                                                {execute((yyvsp[-1].string)); return 1;}
 #line 1394 "nutshparser.tab.c"
     break;
 
   case 10:
 #line 48 "nutshparser.y"
-                                                        {execute((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
+                                                {setEnv((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
 #line 1400 "nutshparser.tab.c"
     break;
 
   case 11:
 #line 49 "nutshparser.y"
-                                                {setEnv((yyvsp[-2].string), (yyvsp[-1].string)); return 1;}
+                                                        {printEnv(); return 1;}
 #line 1406 "nutshparser.tab.c"
     break;
 
   case 12:
 #line 50 "nutshparser.y"
-                                                        {printEnv(); return 1;}
+                                                {unsetEnv((yyvsp[-1].string)); return 1;}
 #line 1412 "nutshparser.tab.c"
     break;
 
   case 13:
-#line 51 "nutshparser.y"
-                                                {unsetEnv((yyvsp[-1].string)); return 1;}
+#line 54 "nutshparser.y"
+                                                                {(yyval.string) = (yyvsp[0].string);}
 #line 1418 "nutshparser.tab.c"
     break;
 
   case 14:
 #line 55 "nutshparser.y"
-                                                                {(yyval.string) = (yyvsp[0].string);}
+                                                        {(yyval.string) = concatArgs((yyval.string), (yyvsp[0].string));}
 #line 1424 "nutshparser.tab.c"
     break;
 
   case 15:
-#line 56 "nutshparser.y"
-                                                        {(yyval.string) = concatArgs((yyval.string), (yyvsp[0].string));}
+#line 59 "nutshparser.y"
+                                                                {(yyval.string) = (yyvsp[0].string);}
 #line 1430 "nutshparser.tab.c"
     break;
 
   case 16:
 #line 60 "nutshparser.y"
-                                                                {(yyval.string) = (yyvsp[0].string);}
+                                                        {(yyval.string) = concat((yyval.string), (yyvsp[0].string));}
 #line 1436 "nutshparser.tab.c"
     break;
 
-  case 17:
-#line 61 "nutshparser.y"
-                                                        {(yyval.string) = concat((yyval.string), (yyvsp[0].string));}
-#line 1442 "nutshparser.tab.c"
-    break;
 
-
-#line 1446 "nutshparser.tab.c"
+#line 1440 "nutshparser.tab.c"
 
       default: break;
     }
@@ -1674,7 +1668,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 63 "nutshparser.y"
+#line 62 "nutshparser.y"
 
 
 int yyerror(char *s) {
@@ -1702,25 +1696,28 @@ char* concatArgs(const char *s1, const char *s2)
 }
 
 // Trying to make a catch all for all non built in commands
-int execute(char *cmd, char *args) {
+int execute(char *cmd) {
 	pid_t pid;
 
 	int arg_amount = 2;
-	for (int i = 0; i < strlen(args); i++) {
-		if(args[i] == ' '){
+	int pipe_amount = 0;
+	for (int i = 0; i < strlen(cmd); i++) {
+		if(cmd[i] == ' '){
 			arg_amount++;
+		}
+		if(cmd[i] == '|'){
+			pipe_amount++;
 		}
 	}
 
 	char* paramList[arg_amount];
-	paramList[0] = cmd;
 
-	char* arg = strtok(args, " ");
-	int i = 1;
-	while(arg != NULL){
-		paramList[i] = arg;
+	char* token = strtok(cmd, " ");
+	int i = 0;
+	while(token != NULL){
+		paramList[i] = token;
 		i++;
-		arg = strtok(NULL, " ");
+		token = strtok(NULL, " ");
 	}
 
 	paramList[i] = NULL;

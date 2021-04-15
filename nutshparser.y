@@ -44,8 +44,7 @@ cmd_line    :
 	| ALIAS END						{listAlias(); return 1;}
 	| UNALIAS STRING END			{removeAlias($2); return 1;}
 	| PWD END						{runPWD(); return 1;}
-	| STRING END					{execute($1, ""); return 1;}
-	| STRING ARGS END				{execute($1, $2); return 1;}
+	| ARGS END						{execute($1); return 1;}
 	| SETENV STRING SET END			{setEnv($2, $3); return 1;}
 	| PRINTENV END					{printEnv(); return 1;}
 	| UNSETENV STRING END			{unsetEnv($2); return 1;}
@@ -87,25 +86,28 @@ char* concatArgs(const char *s1, const char *s2)
 }
 
 // Trying to make a catch all for all non built in commands
-int execute(char *cmd, char *args) {
+int execute(char *cmd) {
 	pid_t pid;
 
 	int arg_amount = 2;
-	for (int i = 0; i < strlen(args); i++) {
-		if(args[i] == ' '){
+	int pipe_amount = 0;
+	for (int i = 0; i < strlen(cmd); i++) {
+		if(cmd[i] == ' '){
 			arg_amount++;
+		}
+		if(cmd[i] == '|'){
+			pipe_amount++;
 		}
 	}
 
 	char* paramList[arg_amount];
-	paramList[0] = cmd;
 
-	char* arg = strtok(args, " ");
-	int i = 1;
-	while(arg != NULL){
-		paramList[i] = arg;
+	char* token = strtok(cmd, " ");
+	int i = 0;
+	while(token != NULL){
+		paramList[i] = token;
 		i++;
-		arg = strtok(NULL, " ");
+		token = strtok(NULL, " ");
 	}
 
 	paramList[i] = NULL;
