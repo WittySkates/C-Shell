@@ -195,8 +195,11 @@ int execute(char *cmd) {
 	}
 	if(!background){
 		//Leaves zombie process (alternate is to wait(&status) and increase amount to high number?)
-		for(int i = 0; i < pipe_amount + 2; i++){
-			waitpid(pid, &status, WUNTRACED);
+		// for(int i = 0; i < pipe_amount + 2; i++){
+		// 	waitpid(pid, &status, WUNTRACED);
+		// }
+		for(int i = 0; i < pipe_amount + 10; i++){
+			wait(&status);
 		}
 	}
 	else{

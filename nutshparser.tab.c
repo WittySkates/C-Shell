@@ -1804,8 +1804,12 @@ int execute(char *cmd) {
 		close(pipefds[i]);
 	}
 	if(!background){
-		for(int i = 0; i < pipe_amount + 2; i++){
-			waitpid(pid, &status, WUNTRACED);
+		//Leaves zombie process (alternate is to wait(&status) and increase amount to high number?)
+		// for(int i = 0; i < pipe_amount + 2; i++){
+		// 	waitpid(pid, &status, WUNTRACED);
+		// }
+		for(int i = 0; i < pipe_amount + 10; i++){
+			wait(&status);
 		}
 	}
 	else{
