@@ -31,6 +31,7 @@ int unsetEnv(char *variable);
 int runPWD();
 int execute(char *cmd);
 int removeAlias(char *name);
+int byebye();
 %}
 
 %union {char *string;}
@@ -41,7 +42,7 @@ int removeAlias(char *name);
 
 %%
 cmd_line    :
-	BYE END							{exit(1); return 1; }
+	BYE END							{byebye(); return 1; }
 	| CD STRING END					{runCD($2); return 1;}
 	| CD END						{homeCD(); return 1;}
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
@@ -93,8 +94,7 @@ char* concatArgs(const char *s1, const char *s2)
 int execute(char *cmd) {
 	pid_t pid, gpid;
 	int status;
-
-
+	//printf("cmd: %s\n", cmd);
 	int arg_amount = 2;
 	int pipe_amount = 0;
 	for (int i = 0; i < strlen(cmd); i++) {
@@ -124,7 +124,7 @@ int execute(char *cmd) {
 		token = strtok(NULL, " ");
 	}
 	paramList[i][j] = NULL;
-
+	
 	int pipefds[2*pipe_amount];
 	for(int p = 0; p < (pipe_amount); p++){
 		if(pipe(pipefds + p*2) < 0) {
@@ -207,7 +207,10 @@ int execute(char *cmd) {
 	}
 }
 
-
+int byebye(){
+	printf("Bye :)\n");
+	exit(0);
+}
 int runPWD() {
 	getcwd(cwd, sizeof(cwd));
     printf("%s\n", cwd);

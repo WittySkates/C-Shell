@@ -1,1 +1,9 @@
+echo "HELLO"
 pwd
+ls | grep Makefile | wc
+cd testdir
+ls
+cat f1.txt
+alias jj " ls -l"
+jj
+bye
