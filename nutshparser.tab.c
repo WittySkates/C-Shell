@@ -1743,17 +1743,38 @@ int execute(char *cmd) {
 			}
 			i++;
 			j = 0;
+		}
+		else if (strcmp(token, "<") == 0){
 			token = strtok(NULL, " ");
+			FILE *fp;
+			long lSize;
+			char *buffer;
+			fp = fopen ( token , "rb" );
+			if( !fp ) perror(token),exit(1);
+			fseek( fp , 0L , SEEK_END);
+			lSize = ftell( fp );
+			rewind( fp );
+			buffer = calloc( 1, lSize+1 );
+			if( !buffer ) fclose(fp),fputs("memory alloc fails",stderr),exit(1);
+			if( 1!=fread( buffer , lSize, 1 , fp) )
+			fclose(fp),free(buffer),fputs("entire read fails",stderr),exit(1);
+
+			paramList[i][j] = buffer;
+			fclose(fp);
+			j++;
+			paramList[i][j] = NULL;
 		}
-		paramList[i][j] = token;
-		if(out_carrot == 1){
-			ofd = creat(token, 0644);
+		else{
+			paramList[i][j] = token;
+			if(out_carrot == 1){
+				ofd = creat(token, 0644);
+			}
+			if(out_carrot == 2){
+				ofd = open(token, O_APPEND | O_CREAT | O_RDWR);
+			}
+			//printf("I: %d J: %d T: %s\n", i,j,token);
+			j++;
 		}
-		if(out_carrot == 2){
-			ofd = open(token, O_APPEND | O_CREAT | O_RDWR);
-		}
-		//printf("I: %d J: %d T: %s\n", i,j,token);
-		j++;
 		token = strtok(NULL, " ");
 	}
 	paramList[i][j] = NULL;
