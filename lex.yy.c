@@ -627,6 +627,16 @@ static int input ( void );
 
 #endif
 
+        static int yy_start_stack_ptr = 0;
+        static int yy_start_stack_depth = 0;
+        static int *yy_start_stack = NULL;
+    
+    static void yy_push_state ( int _new_state );
+    
+    static void yy_pop_state ( void );
+    
+    static int yy_top_state ( void );
+    
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
 #ifdef __ia64__
@@ -765,7 +775,7 @@ YY_DECL
 #line 51 "nutshscanner.l"
 
 
-#line 769 "lex.yy.c"
+#line 779 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -835,7 +845,7 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 55 "nutshscanner.l"
-{BEGIN(is_env);}
+{yy_push_state(is_env);}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
@@ -856,7 +866,7 @@ YY_RULE_SETUP
                                             for ( int i = strlen(yytext) - 1; i >= 0; --i )
                                                 unput( yycopy[i] );
                                             free( yycopy );
-                                            BEGIN(INITIAL);
+                                            yy_pop_state();
                                         }
                                         else return STRING;                                         
                                     };
@@ -865,84 +875,77 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 78 "nutshscanner.l"
-{
-                                    if(isStringCond){
-                                        BEGIN(string_condition);
-                                    }
-                                    else{
-                                        BEGIN(INITIAL);
-                                    }
-                                }
+{yy_pop_state();}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 87 "nutshscanner.l"
+#line 80 "nutshscanner.l"
 { }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 88 "nutshscanner.l"
+#line 81 "nutshscanner.l"
 { count++; return BYE;              }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 89 "nutshscanner.l"
+#line 82 "nutshscanner.l"
 { count++; return CD;               }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 90 "nutshscanner.l"
+#line 83 "nutshscanner.l"
 { isStart = true; return ALIAS;     }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 91 "nutshscanner.l"
+#line 84 "nutshscanner.l"
 { isStart = true; return UNALIAS;   }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 92 "nutshscanner.l"
+#line 85 "nutshscanner.l"
 { count++; return PWD;              }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 93 "nutshscanner.l"
+#line 86 "nutshscanner.l"
 { count++; return SETENV;           }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 94 "nutshscanner.l"
+#line 87 "nutshscanner.l"
 { count++; return UNSETENV;         }        
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 95 "nutshscanner.l"
+#line 88 "nutshscanner.l"
 { count++; return PRINTENV;         }   
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 96 "nutshscanner.l"
+#line 89 "nutshscanner.l"
 { yylval.string = "";               }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 97 "nutshscanner.l"
-{ BEGIN(is_env);                    }
+#line 90 "nutshscanner.l"
+{ yy_push_state(is_env);                    }
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 98 "nutshscanner.l"
+#line 91 "nutshscanner.l"
 { isStringCond = false; isStart = false; count = 0; return END;   }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 99 "nutshscanner.l"
+#line 92 "nutshscanner.l"
 { isStringCond = true; BEGIN(string_condition); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 100 "nutshscanner.l"
+#line 93 "nutshscanner.l"
 {
                         if(ifAlias(yytext) && count == 0 && !isStart) {
                             printf("yytext: %s\n", yytext);
@@ -962,10 +965,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 116 "nutshscanner.l"
+#line 109 "nutshscanner.l"
 ECHO;
 	YY_BREAK
-#line 969 "lex.yy.c"
+#line 972 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(string_condition):
 case YY_STATE_EOF(is_env):
@@ -1765,6 +1768,44 @@ YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len )
 	return b;
 }
 
+    static void yy_push_state (int  _new_state )
+{
+    	if ( (yy_start_stack_ptr) >= (yy_start_stack_depth) )
+		{
+		yy_size_t new_size;
+
+		(yy_start_stack_depth) += YY_START_STACK_INCR;
+		new_size = (yy_size_t) (yy_start_stack_depth) * sizeof( int );
+
+		if ( ! (yy_start_stack) )
+			(yy_start_stack) = (int *) yyalloc( new_size  );
+
+		else
+			(yy_start_stack) = (int *) yyrealloc(
+					(void *) (yy_start_stack), new_size  );
+
+		if ( ! (yy_start_stack) )
+			YY_FATAL_ERROR( "out of memory expanding start-condition stack" );
+		}
+
+	(yy_start_stack)[(yy_start_stack_ptr)++] = YY_START;
+
+	BEGIN(_new_state);
+}
+
+    static void yy_pop_state  (void)
+{
+    	if ( --(yy_start_stack_ptr) < 0 )
+		YY_FATAL_ERROR( "start-condition stack underflow" );
+
+	BEGIN((yy_start_stack)[(yy_start_stack_ptr)]);
+}
+
+    static int yy_top_state  (void)
+{
+    	return (yy_start_stack)[(yy_start_stack_ptr) - 1];
+}
+
 #ifndef YY_EXIT_FAILURE
 #define YY_EXIT_FAILURE 2
 #endif
@@ -1885,6 +1926,10 @@ static int yy_init_globals (void)
     (yy_init) = 0;
     (yy_start) = 0;
 
+    (yy_start_stack_ptr) = 0;
+    (yy_start_stack_depth) = 0;
+    (yy_start_stack) =  NULL;
+
 /* Defined in main.c */
 #ifdef YY_STDINIT
     yyin = stdin;
@@ -1914,6 +1959,10 @@ int yylex_destroy  (void)
 	/* Destroy the stack itself. */
 	yyfree((yy_buffer_stack) );
 	(yy_buffer_stack) = NULL;
+
+    /* Destroy the start condition stack. */
+        yyfree( (yy_start_stack)  );
+        (yy_start_stack) = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
      * yylex() is called, initialization will occur. */
@@ -1972,5 +2021,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 116 "nutshscanner.l"
+#line 109 "nutshscanner.l"
 

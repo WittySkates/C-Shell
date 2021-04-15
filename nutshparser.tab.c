@@ -1785,7 +1785,7 @@ int execute(char *cmd) {
 				char* command = concat(temp, paramList[k][0]);
 				if(access(command, F_OK) == 0){
 					execv(command, paramList[k]);
-					printf("Return not expected. Must be an execv error.n\n");
+					printf("Return not expected. Must be an execv error.\n");
 				}
 				else if(path_c == path_amount){
 					printf("Command \'%s\' not found.\n", paramList[k][0]);

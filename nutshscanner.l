@@ -41,7 +41,7 @@ bool ifEnv(char* var){
 }
 %}
 %array
-%option noyywrap
+%option noyywrap stack
 %x string_condition
 %x is_env
 
@@ -52,7 +52,7 @@ ENV             \$\{
 
 <string_condition>{ANYCHAR}+    { yylval.string = strdup(yytext); printf("yytext: %s\n", yytext); return STRING;}
 <string_condition>[\"]          {BEGIN(INITIAL);}
-<string_condition>{ENV}         {BEGIN(is_env);}
+<string_condition>{ENV}         {yy_push_state(is_env);}
 
 <is_env>{CHAR}+              {
                                     if(ifEnv(yytext)) {
@@ -70,19 +70,12 @@ ENV             \$\{
                                             for ( int i = strlen(yytext) - 1; i >= 0; --i )
                                                 unput( yycopy[i] );
                                             free( yycopy );
-                                            BEGIN(INITIAL);
+                                            yy_pop_state();
                                         }
                                         else return STRING;                                         
                                     };
                                 }
-<is_env>[\}]                    {
-                                    if(isStringCond){
-                                        BEGIN(string_condition);
-                                    }
-                                    else{
-                                        BEGIN(INITIAL);
-                                    }
-                                }
+<is_env>[\}]                    {yy_pop_state();}
 
 [ ]		            { }
 bye                 { count++; return BYE;              }
@@ -94,7 +87,7 @@ setenv              { count++; return SETENV;           }
 unsetenv            { count++; return UNSETENV;         }        
 printenv            { count++; return PRINTENV;         }   
 \}                  { yylval.string = "";               }
-{ENV}               { BEGIN(is_env);                    }
+{ENV}               { yy_push_state(is_env);                    }
 "\n"		        { isStringCond = false; isStart = false; count = 0; return END;   }
 [\"]                { isStringCond = true; BEGIN(string_condition); }
 {CHAR}+             {
