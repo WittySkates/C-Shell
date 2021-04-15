@@ -161,7 +161,7 @@ int execute(char *cmd) {
 		pid = fork();
 		if(pid == 0){
 			// is last
-			if(k == pipe_amount){
+			if(k == pipe_amount && out_carrot > 0){
 				if(dup2(ofd, 1) < 0){
 					perror("dup2");
 					exit(EXIT_FAILURE);
@@ -184,7 +184,9 @@ int execute(char *cmd) {
 			for(i = 0; i < 2*pipe_amount; i++){
 				close(pipefds[i]);
 			}
-			close(ofd);
+			if(out_carrot > 0){
+				close(ofd);
+			}
 			char* cpath = malloc(sizeof(varTable.word[3]));
 			strcpy(cpath, varTable.word[3]);
 
