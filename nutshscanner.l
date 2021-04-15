@@ -45,7 +45,7 @@ bool ifEnv(char* var){
 %x string_condition
 %x is_env
 
-CHAR            [|@.A-Za-z0-9!:\/_-][|@.A-Za-z0-9!:\/_-]*
+CHAR            [<>|@.A-Za-z0-9!:\/_-][<>|@.A-Za-z0-9!:\/_-]*
 ANYCHAR         [)(*&%#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%#@!`;,\.a-zA-Z0-9'/*_=~ -]*
 ENV             \$\{
 %%

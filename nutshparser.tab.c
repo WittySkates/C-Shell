@@ -1726,15 +1726,46 @@ int execute(char *cmd) {
 			paramList[i][j] = NULL;
 			i++;
 			j = 0;
-			token = strtok(NULL, " ");
 		}
-		paramList[i][j] = token;
-		//printf("I: %d J: %d T: %s\n", i,j,token);
-		j++;
+		else if (strcmp(token, "<") == 0){
+			token = strtok(NULL, " ");
+
+			FILE *fp;
+			long lSize;
+			char *buffer;
+			fp = fopen ( token , "rb" );
+			if( !fp ) perror(token),exit(1);
+			fseek( fp , 0L , SEEK_END);
+			lSize = ftell( fp );
+			rewind( fp );
+			buffer = calloc( 1, lSize+1 );
+			if( !buffer ) fclose(fp),fputs("memory alloc fails",stderr),exit(1);
+			if( 1!=fread( buffer , lSize, 1 , fp) )
+			fclose(fp),free(buffer),fputs("entire read fails",stderr),exit(1);
+
+			paramList[i][j] = buffer;
+			fclose(fp);
+			//free(buffer);
+
+			printf("I: %d J: %d T: %s\n", i,j,paramList[i][j]);
+			j++;
+			paramList[i][j] = NULL;
+			printf("I: %d J: %d T: %s\n", i,j,paramList[i][j]);					
+		}
+		else{
+			paramList[i][j] = token;
+			printf("I: %d J: %d T: %s\n", i,j,paramList[i][j]);
+			j++;
+		}
 		token = strtok(NULL, " ");
 	}
 	paramList[i][j] = NULL;
 	
+	for (int i = 0; i < pipe_amount+1; i++){
+		for (int j = 0; j < arg_amount; j++){
+			printf("I: %d J: %d T: %s\n", i,j,paramList[i][j]);
+		}
+	}
 	int pipefds[2*pipe_amount];
 	for(int p = 0; p < (pipe_amount); p++){
 		if(pipe(pipefds + p*2) < 0) {
