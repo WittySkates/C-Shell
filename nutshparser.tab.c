@@ -1723,6 +1723,7 @@ int execute(char *cmd) {
 			output_present = true;
 		}
 	}
+	printf("%i\n", seperator_amount);
 
 	char* paramList[seperator_amount + 1][arg_amount];
 	char* token = strtok(cmd, " ");
@@ -1730,20 +1731,27 @@ int execute(char *cmd) {
 	int i = 0;
 	int j = 0;
 	int ofd;
-	bool carrot_found = false;
+	int out_carrot = 0;
 	while(token != NULL){
-		if((strcmp(token, "|") == 0) || strcmp(token, ">") == 0){
+		if((strcmp(token, "|") == 0) || strcmp(token, ">") == 0 || strcmp(token, ">>") == 0){
 			paramList[i][j] = NULL;
 			if(strcmp(token, ">") == 0){
-				carrot_found = true;
+				out_carrot++;
+			}
+			if(strcmp(token, ">>") == 0){
+				out_carrot++;
+				out_carrot++;
 			}
 			i++;
 			j = 0;
 			token = strtok(NULL, " ");
 		}
 		paramList[i][j] = token;
-		if(carrot_found){
+		if(out_carrot == 1){
 			ofd = creat(token, 0644);
+		}
+		if(out_carrot == 2){
+			ofd = open(token, O_APPEND | O_CREAT | O_RDWR);
 		}
 		//printf("I: %d J: %d T: %s\n", i,j,token);
 		j++;
