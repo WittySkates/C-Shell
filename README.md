@@ -3,16 +3,17 @@ Creators: Jack Gonzales, Connor Dupuis
 
 ## Team Workflow / Work Division
 We divided up the work pretty evenly this project. Every week we would have coding times where we would work together and pair program.
-This helped us figure out flaws in our code and helped to debug. This wokred really well for us. Below we have listed the items that we worked on individually, 
-most of the things not on these lists were done via paired programming together. Usually during this session of paired programming one of us would bring the start 
-of the function. We would say that ~70% of the coding that we did for this project was done when we were together working on the discord call.
+This helped us figure out flaws in our code and helped to debug. Below we have listed the items that we worked on individually; everything else not on the lists was done via paired programming or trivial. Usually during this session of paired programming one of us would share screens and we would talk about the best implementation and how to code it. We would say that ~70% of the coding that we did for this project was done when we were together working on the discord call.
 
 ### Connors individual tasks
-* background tasks
-* file input
+* Background tasks
+* File input
+* Remove alias
 
 ### Jacks individual tasks
-* file output
+* File output
+* Set alias
+* Print Alias
 
 ### Performed together
 It is assumed that everything else was performed together.
@@ -33,14 +34,14 @@ It is assumed that everything else was performed together.
 * all commands with arguments
 
 #### I/O
-* working output (>)
-* working output append (>>)
-* working input
+* Working output (>)
+* Working output append (>>)
+* Working input
 * There cannot be a '\n' character in the inputed .txt file
 
 #### Pipes
 * Pipes with non-built-in commands
-* multiple pipes at once
+* Multiple pipes at once
 
 #### Pipes With IO
 * Pipes and Output work together
@@ -48,19 +49,19 @@ It is assumed that everything else was performed together.
 * Pipes and I/O work together
 
 #### Background Tasks
-* can run tasks in the background
+* Can run tasks in the background
 
-#### Enviromental Vairable Expansion
-* this is working
+#### Environmental Variable Expansion
+* This is working
 
 #### Alias Expansion
-* this is working
+* This is working
 
 #### Shell Robustness
 * Our shell did not crash once in the tests that we ran
 
 #### NOTE
-* commands like ./nutshell < test.txt have botched output... But the output is correct!!
+* Commands like ./nutshell < test.txt have botched output... But the output is correct!!
 
 ## Tasks Not Completed
 #### Wildcard Matching
